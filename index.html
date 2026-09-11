@@ -1551,56 +1551,13 @@ let lastFormData = null;
 
 const WA_NUMBER = '601154160187'; // same banker number used on the ASB & loan CTAs
 const APP_TYPE_LABELS = { kerajaan:'Kerajaan', glc:'GLC', swasta:'Swasta', sendiri:'Bekerja Sendiri', komisen:'Berpendapatan Komisen' };
-const GOOGLE_FORM_BASE = 'https://docs.google.com/forms/d/e/1FAIpQLScFcwj8EXiHyCWDRRGBPzNbSVr2W9Av6pDApJGa_2RMuYg7hQ/viewform';
+// Document-upload-only Google Form (no other questions — nothing to prefill,
+// so the customer only ever sees the upload question, not a duplicate of the
+// data they already entered above).
+const GOOGLE_FORM_BASE = 'https://docs.google.com/forms/d/e/1FAIpQLSd0ikQZ0wmEZ_vZAAnlg7EdJuha7N1jmmijQCt7gfazkA73kA/viewform';
 
 function buildPrefilledGoogleFormUrl(data){
-  const p = new URLSearchParams();
-  p.set('usp', 'pp_url');
-  const set = (entryId, val) => { if (val) p.set(`entry.${entryId}`, val); };
-
-  set(59313892, 'Kad Credit Al-Aiman (Klasik, Gold & Platinum)');
-
-  const sectorMap = { kerajaan:'Penjawat Awam', glc:'Pekerja Swasta', swasta:'Pekerja Swasta', sendiri:'Pemilik Syarikat tunggal atau perkongsian', komisen:'Pekerja GIG berstatus gaji komisen' };
-  set(670501675, sectorMap[data.appType]);
-
-  set(1967860711, data.fullName);
-  set(1231881005, data.nric);
-
-  const eduMap = { sijil:'Sijil atau Diploma', diploma:'Diploma dan keatas', ijazah:'Diploma dan keatas' };
-  set(1245173384, eduMap[data.education]);
-
-  set(2039323200, data.mobile);
-  set(850865173, data.email);
-  set(974752641, [data.addr1, data.addr2].filter(Boolean).join(', '));
-  set(1536842496, data.motherName);
-
-  set(860622319, data.employerName);
-  set(179730533, data.officeAddr1);
-  set(353595115, data.position);
-  set(535719005, data.grossIncome);
-
-  const maritalMap = { bujang:'Bujang', berkahwin:'Berkahwin' };
-  set(478482787, maritalMap[data.marital]);
-
-  set(1137965112, data.spouseName);
-  set(1110040086, data.spouseMobile);
-  set(1930312287, data.spouseEmployer);
-
-  set(607510265, data.emergencyName);
-  set(1576639254, data.emergencyMobile);
-  set(2119809551, data.emergencyRelationship);
-
-  set(1036439717, data.cardName);
-
-  const deliveryMap = { rumah:'Pos ke alamat rumah', pejabat:'Pos ke alamat pejabat', cawangan:'Ambil sendiri di cawangan BSN Terdekat' };
-  set(1641288453, deliveryMap[data.delivery]);
-
-  const ownershipMap = { sendiri:'Milikan Sendiri', sewa:'Sewa' };
-  set(626260175, ownershipMap[data.ownership]);
-
-  set(439193072, data.occupancy);
-
-  return `${GOOGLE_FORM_BASE}?${p.toString()}`;
+  return GOOGLE_FORM_BASE;
 }
 const INCOME_DOC_HINTS = {
   kerajaan: 'Salinan penyata gaji 1 bulan terkini ATAU Surat Pengesahan Majikan.',
