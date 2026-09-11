@@ -32,7 +32,7 @@ const NAME_QUESTION_TITLE = 'Nama Pemohon';
 // Get this from the folder's URL: drive.google.com/drive/folders/<THIS PART>
 // Leave as '' to use the Form's own default "File responses" folder as the
 // parent (Google creates one automatically the first time someone uploads).
-const PARENT_FOLDER_ID = '';
+const PARENT_FOLDER_ID = '1eiBBIEgar1mtHEam2ybD1-uU2wSjROpj'; // "BOT-B" folder
 
 // ── Trigger entry point ──────────────────────────────────────────────────
 
