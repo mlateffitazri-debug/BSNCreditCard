@@ -4,7 +4,7 @@
  * SETUP (one-time):
  * 1. Open the Google Form (the document-upload-only one) in Edit mode.
  * 2. Extensions -> Apps Script. Paste this whole file in, replacing Code.gs.
- * 3. Fill in NAME_QUESTION_TITLE and PARENT_FOLDER_ID below.
+ * 3. Fill in PARENT_FOLDER_ID below.
  * 4. Run any function once from the editor (e.g. select `onFormSubmit` in the
  *    toolbar dropdown and click Run) — this prompts Google to ask for
  *    permission (Drive + Forms access). Approve it once.
@@ -16,17 +16,14 @@
  * 6. Done — every new submission will now auto-run this script.
  *
  * WHAT IT DOES:
- * On each form submission, reads the "Nama Pemohon" answer, creates (or
- * reuses) a Drive folder named after that applicant under PARENT_FOLDER_ID,
- * and moves every uploaded file for that response into it — so each
- * applicant ends up with their own folder instead of everything dumped
- * into one flat folder.
+ * On each form submission, reads the non-file-upload answer (the applicant's
+ * name) and creates (or reuses) a Drive folder named after them under
+ * PARENT_FOLDER_ID, then moves every uploaded file for that response into
+ * it — so each applicant ends up with their own folder instead of
+ * everything dumped into one flat folder.
  */
 
 // ── Configuration — fill these in ───────────────────────────────────────────
-
-// Must match the exact question title in the Form (case-sensitive).
-const NAME_QUESTION_TITLE = 'Nama Pemohon';
 
 // The Drive folder ID that should contain one subfolder per applicant.
 // Get this from the folder's URL: drive.google.com/drive/folders/<THIS PART>
@@ -46,12 +43,6 @@ function onFormSubmit(e) {
 
     for (const itemResponse of itemResponses) {
       const item = itemResponse.getItem();
-      const title = item.getTitle();
-
-      if (title === NAME_QUESTION_TITLE) {
-        applicantName = String(itemResponse.getResponse() || '').trim();
-        continue;
-      }
 
       if (item.getType() === FormApp.ItemType.FILE_UPLOAD) {
         const answer = itemResponse.getResponse();
@@ -59,6 +50,14 @@ function onFormSubmit(e) {
         // when only one file was uploaded.
         const ids = Array.isArray(answer) ? answer : [answer];
         ids.forEach((id) => { if (id) fileIds.push(id); });
+        continue;
+      }
+
+      // Any non-file-upload question is treated as the name field — this
+      // form only has the name + upload questions, so no title-matching
+      // (which broke when the actual title didn't exactly match) is needed.
+      if (!applicantName) {
+        applicantName = String(itemResponse.getResponse() || '').trim();
       }
     }
 
