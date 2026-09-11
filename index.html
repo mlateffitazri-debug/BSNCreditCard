@@ -61,6 +61,12 @@
   .btn-primary:disabled{background:#b9c7c8;cursor:not-allowed;}
   .btn-secondary{background:var(--panel2);color:var(--text);border:1px solid var(--border);}
   .btn-secondary:hover{background:#e5ded0;}
+  .upload-cta-wrap{margin-top:6px;}
+  .upload-cta-badge{display:inline-block;background:var(--danger);color:#fff;font-size:.7rem;font-weight:800;letter-spacing:.03em;padding:3px 10px;border-radius:999px;margin-bottom:8px;text-transform:uppercase;}
+  .btn-upload-cta{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;background:linear-gradient(180deg,#ff9f43,#e8790a);color:#fff;text-decoration:none;padding:16px;border-radius:10px;font-size:1.05rem;font-weight:800;box-shadow:0 4px 14px rgba(232,121,10,.4);animation:uploadPulse 1.8s ease-in-out infinite;}
+  .btn-upload-cta:hover{background:linear-gradient(180deg,#ffab5c,#f28417);}
+  .btn-upload-cta svg{width:24px;height:24px;flex-shrink:0;}
+  @keyframes uploadPulse{0%,100%{box-shadow:0 4px 14px rgba(232,121,10,.4);}50%{box-shadow:0 4px 22px rgba(232,121,10,.75);}}
   .sigpad-wrap{background:#fff;border:1px solid var(--border);border-radius:6px;overflow:hidden;}
   .sigpad{display:block;width:100%;height:150px;touch-action:none;cursor:crosshair;}
 
@@ -853,7 +859,13 @@
       <code id="driveFolderName">-</code>
       <button type="button" class="btn-copy" id="btnCopyFolderName">Salin / Copy</button>
     </div>
-    <a href="#" id="driveFolderLink" class="btn-primary" style="display:block;text-align:center;text-decoration:none;padding:13px 16px;margin-top:6px;" target="_blank" rel="noopener noreferrer">Buka Borang Muat Naik Dokumen / Open Document Upload Form</a>
+    <div class="upload-cta-wrap">
+      <span class="upload-cta-badge">Langkah Wajib / Required Step</span>
+      <a href="#" id="driveFolderLink" class="btn-upload-cta" target="_blank" rel="noopener noreferrer">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4"/><path d="m6 10 6-6 6 6"/><path d="M4 20h16"/></svg>
+        <span>Buka Borang Muat Naik Dokumen / Open Document Upload Form</span>
+      </a>
+    </div>
 
     <div class="checkbox-row" style="margin-top:18px;">
       <input type="checkbox" id="uploadConfirm" disabled>
