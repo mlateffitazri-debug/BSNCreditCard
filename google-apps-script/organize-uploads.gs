@@ -68,7 +68,7 @@ function onFormSubmit(e) {
     }
 
     const folderName = sanitizeFolderName(applicantName) || 'Tiada_Nama_' + Utilities.formatDate(new Date(), 'GMT+8', 'yyyyMMdd_HHmmss');
-    const parent = getParentFolder();
+    const parent = getParentFolder(fileIds[0]);
     const applicantFolder = getOrCreateFolder(parent, folderName);
 
     fileIds.forEach((fileId) => moveFileToFolder(fileId, applicantFolder));
@@ -91,23 +91,17 @@ function sanitizeFolderName(name) {
     .replace(/[\\/:*?"<>|]/g, ''); // strip characters Drive folder names can't use cleanly
 }
 
-function getParentFolder() {
+function getParentFolder(sampleFileId) {
   if (PARENT_FOLDER_ID) {
     return DriveApp.getFolderById(PARENT_FOLDER_ID);
   }
-  // Fall back to wherever the first uploaded file already lives (the Form's
-  // own auto-created "File responses" folder) so this works even before
-  // PARENT_FOLDER_ID is configured.
-  const form = FormApp.getActiveForm();
-  const destId = form.getDestinationId();
-  if (form.getDestinationType() === FormApp.DestinationType.SPREADSHEET) {
-    // The file-responses folder sits alongside the response Sheet with a
-    // predictable name; find it by convention.
-    const ss = SpreadsheetApp.openById(destId);
-    const ssFile = DriveApp.getFileById(ss.getId());
-    const parents = ssFile.getParents();
-    if (parents.hasNext()) return parents.next();
-  }
+  // Fall back to wherever the just-uploaded file already lives — that's
+  // Google's own auto-created "File responses" folder for this Form. This
+  // works whether or not the Form has a linked response Spreadsheet (a
+  // Form with no linked Sheet has no getDestinationId() to derive it from).
+  const file = DriveApp.getFileById(sampleFileId);
+  const parents = file.getParents();
+  if (parents.hasNext()) return parents.next();
   return DriveApp.getRootFolder();
 }
 
