@@ -1,0 +1,1917 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="referrer" content="no-referrer">
+<title>BSN Credit Card Application — Auto-fill</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#faf6ee; --panel:#ffffff; --panel2:#f0ece1; --border:#e2dbc9;
+    --text:#1a1a1a; --muted:#6b6355; --accent:#00A1B1; --accent-dark:#008895;
+    --accent2:#0d7a52; --danger:#c0392b; --input-bg:#ffffff;
+  }
+  *{box-sizing:border-box;}
+  input,button,select,textarea{font-family:inherit;}
+  body{
+    margin:0; background:var(--bg); color:var(--text);
+    font-family:'Nunito',-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+    padding:24px 16px 60px;
+  }
+  .wrap{max-width:760px;margin:0 auto;}
+  .topbar{display:flex;align-items:center;gap:10px;margin-bottom:18px;}
+  .logo-img{height:32px;width:auto;border-radius:6px;}
+  .topbar-title{font-weight:800;font-size:1rem;}
+  .topbar-sub{color:var(--muted);font-size:.78rem;}
+  h1{font-size:1.35rem;margin:0 0 6px;}
+  .subtitle{color:var(--muted);max-width:640px;margin:0 0 24px;font-size:.9rem;line-height:1.5;}
+  .card{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:22px 20px;box-shadow:0 2px 10px rgba(0,0,0,.05);margin-bottom:20px;}
+  .card h2{font-size:1rem;margin:0 0 4px;color:var(--accent-dark);}
+  .card .sec-note{color:var(--muted);font-size:.78rem;margin:0 0 16px;}
+  label{display:block;font-size:.82rem;color:var(--muted);margin-bottom:6px;font-weight:600;}
+  label:has(+ input:required)::after, label:has(+ select:required)::after{content:" *";color:var(--danger);}
+  input:required:invalid, select:required:invalid{border-color:#e0b0a8;}
+  .field{margin-bottom:16px;}
+  .row2{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+  .row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;}
+  @media (max-width:560px){.row2,.row3{grid-template-columns:1fr;}}
+  input[type=text],input[type=number],input[type=date],input[type=email],select{
+    width:100%;padding:10px 12px;background:var(--input-bg);
+    border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:.95rem;
+  }
+  input:focus,select:focus{outline:none;border-color:var(--accent);}
+  input.uppercase{text-transform:uppercase;}
+  .hint{font-size:.72rem;color:var(--muted);margin-top:5px;}
+  .radio-group{display:flex;flex-wrap:wrap;gap:8px;}
+  .radio-pill{position:relative;}
+  .radio-pill input{position:absolute;opacity:0;width:100%;height:100%;margin:0;cursor:pointer;}
+  .radio-pill span{display:inline-block;padding:6px 11px;border-radius:6px;border:1px solid var(--border);background:var(--panel2);font-size:.8rem;font-weight:600;color:var(--text);cursor:pointer;transition:background .15s ease,border-color .15s ease;}
+  .radio-pill input:checked + span{background:var(--accent);border-color:var(--accent);color:#fff;}
+  .other-input{margin-top:10px;max-width:260px;}
+  .checkbox-row{display:flex;align-items:center;gap:8px;margin-bottom:10px;}
+  .checkbox-row input{width:16px;height:16px;}
+  .checkbox-row label{margin:0;font-weight:600;color:var(--text);font-size:.85rem;}
+  .btn-row{display:flex;gap:10px;margin-top:6px;}
+  button{cursor:pointer;border:none;border-radius:6px;font-weight:700;font-size:.9rem;padding:11px 16px;}
+  .btn-primary{flex:1;background:var(--accent);color:#fff;}
+  .btn-primary:hover{background:var(--accent-dark);}
+  .btn-primary:disabled{background:#b9c7c8;cursor:not-allowed;}
+  .btn-secondary{background:var(--panel2);color:var(--text);border:1px solid var(--border);}
+  .btn-secondary:hover{background:#e5ded0;}
+  .sigpad-wrap{background:#fff;border:1px solid var(--border);border-radius:6px;overflow:hidden;}
+  .sigpad{display:block;width:100%;height:150px;touch-action:none;cursor:crosshair;}
+
+  .modal-overlay{position:fixed;inset:0;background:rgba(20,20,15,.55);z-index:1000;display:flex;align-items:center;justify-content:center;padding:20px;}
+  .modal-box{background:var(--panel);border-radius:14px;max-width:640px;width:100%;max-height:88vh;overflow-y:auto;padding:24px 22px;box-shadow:0 10px 40px rgba(0,0,0,.25);}
+  .modal-box h2{margin:0 0 4px;font-size:1.15rem;color:var(--accent-dark);}
+  .modal-box .sec-note{margin:0 0 16px;}
+  .doc-cat{border:1px solid var(--border);border-radius:10px;padding:14px 16px;margin-bottom:12px;}
+  .doc-cat h3{margin:0 0 8px;font-size:.92rem;}
+  .doc-cat ol{margin:0;padding-left:20px;font-size:.83rem;color:var(--text);line-height:1.6;}
+  .btn-whatsapp{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;background:#25D366;color:#fff;padding:13px 16px;font-size:.92rem;font-weight:700;border-radius:6px;text-decoration:none;border:none;cursor:pointer;}
+  .btn-whatsapp:hover{background:#1ebe5a;}
+  .btn-whatsapp svg{width:20px;height:20px;flex-shrink:0;}
+  .pdf-preview-frame{width:100%;height:70vh;border:1px solid var(--border);border-radius:8px;background:#525659;}
+  .stage-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px;}
+  .stage-actions button, .stage-actions a{flex:1;min-width:160px;}
+  .upload-row{margin-bottom:14px;}
+  .upload-row label{display:block;font-size:.82rem;font-weight:600;color:var(--muted);margin-bottom:6px;}
+  .upload-row input[type=file]{width:100%;font-size:.82rem;padding:8px;border:1px dashed var(--border);border-radius:8px;background:var(--panel2);}
+  .folder-tag{display:flex;align-items:center;gap:8px;background:var(--panel2);border:1px solid var(--border);border-radius:8px;padding:10px 12px;font-size:.85rem;margin-bottom:10px;flex-wrap:wrap;}
+  .folder-tag code{background:#fff;border:1px solid var(--border);border-radius:5px;padding:3px 8px;font-weight:700;}
+  .btn-copy{padding:5px 10px;font-size:.75rem;border-radius:5px;background:var(--accent);color:#fff;}
+
+  .banker-card{background:var(--panel2);border:1px solid var(--border);border-radius:10px;padding:18px;margin:16px 0;}
+  .banker-card .banker-name{font-weight:800;font-size:1.05rem;color:var(--text);margin:0 0 2px;}
+  .banker-card .banker-title{color:var(--accent-dark);font-weight:700;font-size:.8rem;letter-spacing:.03em;text-transform:uppercase;margin:0 0 14px;}
+  .banker-card .banker-row{display:flex;gap:8px;font-size:.85rem;line-height:1.6;color:var(--text);}
+  .banker-card .banker-label{color:var(--muted);min-width:34px;font-weight:700;}
+  .banker-addr{font-size:.85rem;line-height:1.6;color:var(--text);margin:0 0 14px;}
+  .status{font-size:.82rem;margin-top:10px;min-height:1.2em;}
+  .status.error{color:var(--danger);}
+  .status.ok{color:var(--accent2);}
+  .footnote{text-align:center;color:var(--muted);font-size:.75rem;margin-top:24px;}
+  fieldset{border:none;padding:0;margin:0;}
+</style>
+</head>
+<body>
+
+<div class="modal-overlay" id="bankerInfoModal" style="display:none;">
+  <div class="modal-box" style="text-align:center;max-width:420px;">
+    <img src="bsn-logo.svg" alt="BSN" style="height:36px;margin-bottom:14px;">
+    <h2 style="margin-bottom:4px;">Permohonan Anda Diuruskan Oleh</h2>
+    <p class="sec-note">Your application is being handled by</p>
+
+    <div class="banker-card" style="text-align:left;">
+      <p class="banker-name">NORLIDA BINTI MOHD AZMAN</p>
+      <p class="banker-title">Financial Executive</p>
+      <p class="banker-addr">
+        Bank Simpanan Nasional<br>
+        Cawangan Pandan Indah<br>
+        No 8G, Jalan Perubatan 2<br>
+        Pandan Indah, 55100 Kuala Lumpur<br>
+        Malaysia
+      </p>
+      <div class="banker-row"><span class="banker-label">T</span><span>03 4296 0486</span></div>
+      <div class="banker-row"><span class="banker-label">M</span><span>013 7507106</span></div>
+      <div class="banker-row"><span class="banker-label">F</span><span>03 4296 0486</span></div>
+      <div class="banker-row"><span class="banker-label">E</span><span>norlida_azman@bsn.com.my</span></div>
+      <div class="banker-row"><span class="banker-label">W</span><span>www.bsn.com.my</span></div>
+    </div>
+
+    <button type="button" class="btn-primary" id="btnExitBankerModal" style="width:100%;">Tamat / Exit</button>
+  </div>
+</div>
+
+<div class="wrap">
+  <div class="topbar">
+    <img src="bsn-logo.svg" alt="BSN" class="logo-img">
+    <div>
+      <div class="topbar-title">BSN Credit Card/-i Application</div>
+      <div class="topbar-sub">Auto-fill preview — Full Application</div>
+    </div>
+  </div>
+
+  <h1>Borang Permohonan Kad Kredit/-i BSN</h1>
+  <p class="subtitle">Isi maklumat di bawah, dan sistem akan menjana salinan borang rasmi BSN yang telah terisi (PDF) berdasarkan jawapan anda. Semak semula sebelum ditandatangani.</p>
+
+  <form id="ccForm">
+
+    <div class="card">
+      <h2>Jenis Permohonan</h2>
+      <p class="sec-note">Application Type</p>
+      <div class="field">
+        <label>Jenis Pekerjaan / Employment Type</label>
+        <div class="radio-group" data-group="appType">
+          <label class="radio-pill"><input type="radio" name="appType" value="kerajaan" checked><span>Kakitangan Kerajaan</span></label>
+          <label class="radio-pill"><input type="radio" name="appType" value="glc"><span>Kakitangan GLC</span></label>
+          <label class="radio-pill"><input type="radio" name="appType" value="swasta"><span>Kakitangan Swasta</span></label>
+          <label class="radio-pill"><input type="radio" name="appType" value="sendiri"><span>Bekerja Sendiri</span></label>
+          <label class="radio-pill"><input type="radio" name="appType" value="komisen"><span>Berpendapatan Komisen</span></label>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Pemilihan Kad</h2>
+      <p class="sec-note">Card Selection</p>
+      <div class="field">
+        <label>Jenis Kad / Card Type</label>
+        <select id="cardType" required>
+          <optgroup label="Kad Islamik / Islamic">
+            <option value="islamic-platinum">BSN Al-Aiman Platinum</option>
+            <option value="islamic-emas">BSN Al-Aiman Emas / Gold</option>
+            <option value="islamic-klasik">BSN Al-Aiman Klasik / Classic</option>
+            <option value="islamic-teachers">BSN-Teachers Al-Aiman Emas / Gold (Visa sahaja)</option>
+          </optgroup>
+          <optgroup label="Kad Konvensional / Conventional">
+            <option value="conv-platinum" selected>BSN Platinum</option>
+            <option value="conv-cashback">BSN Cash Back (Visa sahaja)</option>
+            <option value="conv-emas">BSN Emas / Gold</option>
+            <option value="conv-klasik">BSN Klasik / Classic</option>
+            <option value="conv-teachers">BSN-Teachers Emas / Gold (Visa sahaja)</option>
+          </optgroup>
+          <optgroup label="Kad Jenama Bersama / Co-branded">
+            <option value="cobrand-gcard-islamic">BSN G-Card Al-Aiman Visa</option>
+            <option value="cobrand-gcard">BSN G-Card Visa</option>
+            <option value="cobrand-aiafam">BSN-AIAFAM Visa Platinum</option>
+            <option value="cobrand-uum-platinum">BSN-UUM Al-Aiman Mastercard Platinum</option>
+            <option value="cobrand-uum-emas">BSN-UUM Al-Aiman Mastercard Emas / Gold</option>
+          </optgroup>
+        </select>
+      </div>
+
+      <div class="field" id="networkField">
+        <label>Rangkaian / Network</label>
+        <div class="radio-group" data-group="network">
+          <label class="radio-pill"><input type="radio" name="network" value="visa" checked><span>Visa</span></label>
+          <label class="radio-pill"><input type="radio" name="network" value="mastercard"><span>Mastercard</span></label>
+        </div>
+      </div>
+
+      <div class="field" id="gcardSectorField" style="display:none;">
+        <label>Sektor Pekerjaan / Employment Sector (G-Card)</label>
+        <div class="radio-group" data-group="gcardSector">
+          <label class="radio-pill"><input type="radio" name="gcardSector" value="kerajaan" checked><span>Kerajaan / Government</span></label>
+          <label class="radio-pill"><input type="radio" name="gcardSector" value="glc"><span>GLC</span></label>
+        </div>
+      </div>
+
+      <div class="field" id="aiafamField" style="display:none;">
+        <label>Pilihan Premium Insurans / Insurance Premium Option (AIAFAM)</label>
+        <div class="radio-group" data-group="aiafamOption">
+          <label class="radio-pill"><input type="radio" name="aiafamOption" value="cashback" checked><span>0.8% Pulangan Tunai</span></label>
+          <label class="radio-pill"><input type="radio" name="aiafamOption" value="zerointerest"><span>Pelan Ansuran 12 Bulan</span></label>
+        </div>
+      </div>
+
+      <div class="field" id="uumField" style="display:none;">
+        <label>Saya adalah / I am a (UUM)</label>
+        <div class="radio-group" data-group="uumStatus">
+          <label class="radio-pill"><input type="radio" name="uumStatus" value="staff" checked><span>Kakitangan UUM</span></label>
+          <label class="radio-pill"><input type="radio" name="uumStatus" value="graduate"><span>Graduan UUM</span></label>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Arahan Penghantaran Kad</h2>
+      <p class="sec-note">Card Delivery Instructions</p>
+      <div class="field">
+        <div class="radio-group" data-group="delivery">
+          <label class="radio-pill"><input type="radio" name="delivery" value="rumah" checked><span>Rumah / Home</span></label>
+          <label class="radio-pill"><input type="radio" name="delivery" value="pejabat"><span>Pejabat / Office</span></label>
+          <label class="radio-pill"><input type="radio" name="delivery" value="cawangan"><span>Cawangan BSN / BSN Branch</span></label>
+        </div>
+        <input type="text" id="branchName" class="other-input uppercase" placeholder="Nama Cawangan" style="display:none;max-width:320px;">
+      </div>
+      <div class="checkbox-row">
+        <input type="checkbox" id="estatementAck" checked>
+        <label for="estatementAck">Saya bersetuju penyata hanya boleh didapati di myBSN Internet Banking / I agree statements are only available via myBSN Internet Banking</label>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Nama &amp; Gelaran</h2>
+      <p class="sec-note">Name &amp; Salutation</p>
+
+      <div class="field">
+        <label>Gelaran / Salutation</label>
+        <div class="radio-group" data-group="salutation">
+          <label class="radio-pill"><input type="radio" name="salutation" value="encik" checked><span>Encik / Mr</span></label>
+          <label class="radio-pill"><input type="radio" name="salutation" value="puan"><span>Puan / Mdm</span></label>
+          <label class="radio-pill"><input type="radio" name="salutation" value="cik"><span>Cik / Ms</span></label>
+          <label class="radio-pill"><input type="radio" name="salutation" value="lain"><span>Lain-lain / Others</span></label>
+        </div>
+        <input type="text" id="salutationOther" class="other-input uppercase" placeholder="Nyatakan" style="display:none">
+      </div>
+
+      <div class="field">
+        <label>Nama seperti dalam Kad Pengenalan / Name as in NRIC</label>
+        <input type="text" id="fullName" class="uppercase" maxlength="52" placeholder="AHMAD BIN ABDULLAH" required>
+        <div class="hint">Maksimum 52 aksara (2 baris x 26). Guna huruf besar sahaja.</div>
+      </div>
+
+      <div class="field">
+        <label>Nama tertera di atas kad / Name to appear on card (max 19 letters)</label>
+        <input type="text" id="cardName" class="uppercase" maxlength="19" placeholder="AHMAD ABDULLAH" required>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Identiti</h2>
+      <p class="sec-note">Identity</p>
+
+      <div class="row2">
+        <div class="field">
+          <label>Jantina / Gender</label>
+          <div class="radio-group" data-group="gender">
+            <label class="radio-pill"><input type="radio" name="gender" value="lelaki" checked><span>Lelaki / Male</span></label>
+            <label class="radio-pill"><input type="radio" name="gender" value="perempuan"><span>Perempuan / Female</span></label>
+          </div>
+        </div>
+        <div class="field">
+          <label>Tarikh Lahir / Date of Birth</label>
+          <input type="date" id="dob" required>
+        </div>
+      </div>
+
+      <div class="row2">
+        <div class="field">
+          <label>No. Kad Pengenalan / NRIC No.</label>
+          <input type="text" id="nric" placeholder="900815-14-1234" maxlength="14" required>
+        </div>
+        <div class="field">
+          <label>No. Kad Pengenalan Lama / Old IC No. (jika ada)</label>
+          <input type="text" id="oldIc" maxlength="8" placeholder="Optional">
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Latar Belakang</h2>
+      <p class="sec-note">Background</p>
+
+      <div class="field">
+        <label>Taraf Perkahwinan / Marital Status</label>
+        <div class="radio-group" data-group="marital">
+          <label class="radio-pill"><input type="radio" name="marital" value="bujang" checked><span>Bujang / Single</span></label>
+          <label class="radio-pill"><input type="radio" name="marital" value="berkahwin"><span>Berkahwin / Married</span></label>
+          <label class="radio-pill"><input type="radio" name="marital" value="lain"><span>Lain-lain / Others</span></label>
+        </div>
+        <input type="text" id="maritalOther" class="other-input uppercase" placeholder="Nyatakan" style="display:none">
+      </div>
+
+      <div class="row2">
+        <div class="field">
+          <label>Bil. Tanggungan / No. of Dependants</label>
+          <input type="number" id="dependants" min="0" max="99" value="0">
+        </div>
+        <div class="field">
+          <label>Tahap Pendidikan / Education Level</label>
+          <div class="radio-group" data-group="education">
+            <label class="radio-pill"><input type="radio" name="education" value="sijil" checked><span>Sijil</span></label>
+            <label class="radio-pill"><input type="radio" name="education" value="diploma"><span>Diploma</span></label>
+            <label class="radio-pill"><input type="radio" name="education" value="ijazah"><span>Ijazah</span></label>
+            <label class="radio-pill"><input type="radio" name="education" value="lain"><span>Lain-lain</span></label>
+          </div>
+          <input type="text" id="educationOther" class="other-input uppercase" placeholder="Nyatakan" style="display:none">
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Bangsa / Race</label>
+        <div class="radio-group" data-group="race">
+          <label class="radio-pill"><input type="radio" name="race" value="melayu" checked><span>Melayu / Malay</span></label>
+          <label class="radio-pill"><input type="radio" name="race" value="cina"><span>Cina / Chinese</span></label>
+          <label class="radio-pill"><input type="radio" name="race" value="india"><span>India / Indian</span></label>
+          <label class="radio-pill"><input type="radio" name="race" value="lain"><span>Lain-lain / Others</span></label>
+        </div>
+        <input type="text" id="raceOther" class="other-input uppercase" placeholder="Nyatakan" style="display:none">
+      </div>
+
+      <div class="field">
+        <label>Status Residensi / Residency Status</label>
+        <div class="radio-group" data-group="residency">
+          <label class="radio-pill"><input type="radio" name="residency" value="bumi" checked><span>Bumiputera</span></label>
+          <label class="radio-pill"><input type="radio" name="residency" value="nonbumi"><span>Bukan Bumiputera</span></label>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Alamat Kediaman Terkini</h2>
+      <p class="sec-note">Current Residential Address (3 baris / lines)</p>
+
+      <div class="field"><input type="text" id="addr1" class="uppercase" maxlength="45" placeholder="Line 1" required></div>
+      <div class="field"><input type="text" id="addr2" class="uppercase" maxlength="45" placeholder="Line 2"></div>
+      <div class="field"><input type="text" id="addr3" class="uppercase" maxlength="45" placeholder="Line 3"></div>
+
+      <div class="row2">
+        <div class="field">
+          <label>Poskod / Postcode</label>
+          <input type="text" id="poskod" maxlength="5" placeholder="43000" required>
+        </div>
+        <div class="field">
+          <label>Negeri / State</label>
+          <select id="negeri" required>
+            <option value="">Pilih Negeri</option>
+            <option>Johor</option><option>Kedah</option><option>Kelantan</option>
+            <option>Melaka</option><option>Negeri Sembilan</option><option>Pahang</option>
+            <option>Perak</option><option>Perlis</option><option>Pulau Pinang</option>
+            <option>Sabah</option><option>Sarawak</option><option>Selangor</option>
+            <option>Terengganu</option><option>WP Kuala Lumpur</option>
+            <option>WP Labuan</option><option>WP Putrajaya</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Jenis Pemilikan / Property Type</label>
+        <div class="radio-group" data-group="ownership">
+          <label class="radio-pill"><input type="radio" name="ownership" value="sendiri" checked><span>Rumah Sendiri</span></label>
+          <label class="radio-pill"><input type="radio" name="ownership" value="sewa"><span>Sewa / Rent</span></label>
+          <label class="radio-pill"><input type="radio" name="ownership" value="gadaijanji"><span>Gadai Janji</span></label>
+          <label class="radio-pill"><input type="radio" name="ownership" value="saudara"><span>Saudara-mara</span></label>
+          <label class="radio-pill"><input type="radio" name="ownership" value="lain"><span>Lain-lain</span></label>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Tempoh Menetap / Years of Occupancy</label>
+        <input type="number" id="occupancy" min="0" max="99" value="1" style="max-width:140px;">
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Alamat Surat Menyurat</h2>
+      <p class="sec-note">Mailing Address (jika berbeza)</p>
+
+      <div class="checkbox-row">
+        <input type="checkbox" id="sameMailing" checked>
+        <label for="sameMailing">Sama seperti alamat kediaman / Same as residential address</label>
+      </div>
+
+      <div id="mailingFields" style="display:none;">
+        <div class="field"><input type="text" id="mailAddr1" class="uppercase" maxlength="45" placeholder="Line 1"></div>
+        <div class="field"><input type="text" id="mailAddr2" class="uppercase" maxlength="45" placeholder="Line 2"></div>
+        <div class="row2">
+          <div class="field">
+            <label>Poskod / Postcode</label>
+            <input type="text" id="mailPoskod" maxlength="5" placeholder="43000">
+          </div>
+          <div class="field">
+            <label>Negeri / State</label>
+            <select id="mailNegeri">
+              <option value="">Pilih Negeri</option>
+              <option>Johor</option><option>Kedah</option><option>Kelantan</option>
+              <option>Melaka</option><option>Negeri Sembilan</option><option>Pahang</option>
+              <option>Perak</option><option>Perlis</option><option>Pulau Pinang</option>
+              <option>Sabah</option><option>Sarawak</option><option>Selangor</option>
+              <option>Terengganu</option><option>WP Kuala Lumpur</option>
+              <option>WP Labuan</option><option>WP Putrajaya</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Perhubungan</h2>
+      <p class="sec-note">Contact Details</p>
+
+      <div class="row2">
+        <div class="field">
+          <label>No. Tel. Bimbit / Mobile Tel. No.</label>
+          <input type="text" id="mobile" placeholder="012-3456789" maxlength="13" required>
+        </div>
+        <div class="field">
+          <label>E-mel / Email</label>
+          <input type="email" id="email" placeholder="nama@email.com" required>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Pengesahan Keselamatan</h2>
+      <p class="sec-note">Security Verification</p>
+      <div class="field">
+        <label>Nama Penuh Ibu / Mother's Full Name</label>
+        <input type="text" id="motherName" class="uppercase" maxlength="52" required>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Butiran Pekerjaan</h2>
+      <p class="sec-note">Employment Details</p>
+
+      <div class="field">
+        <label>Nama Majikan / Syarikat / Name of Employer / Firm</label>
+        <input type="text" id="employerName" class="uppercase" maxlength="26" required>
+      </div>
+
+      <div class="row2">
+        <div class="field">
+          <label>Jenis Perniagaan / Nature of Business</label>
+          <input type="text" id="natureOfBusiness" class="uppercase" maxlength="26">
+        </div>
+        <div class="field">
+          <label>Jawatan / Position</label>
+          <input type="text" id="position" class="uppercase" maxlength="26">
+        </div>
+      </div>
+
+      <div class="row3">
+        <div class="field">
+          <label>Tempoh Perkhidmatan — Tahun / Years</label>
+          <input type="number" id="serviceYears" min="0" max="99" value="0">
+        </div>
+        <div class="field">
+          <label>Tempoh Perkhidmatan — Bulan / Months</label>
+          <input type="number" id="serviceMonths" min="0" max="11" value="0">
+        </div>
+        <div class="field">
+          <label>No. Tel. Pejabat / Office Tel. No.</label>
+          <input type="text" id="officeTel" placeholder="03-12345678" maxlength="13">
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Alamat Pejabat / Office Address (sehingga 3 baris)</label>
+        <input type="text" id="officeAddr1" class="uppercase" maxlength="26" placeholder="Line 1" style="margin-bottom:8px;">
+        <input type="text" id="officeAddr2" class="uppercase" maxlength="26" placeholder="Line 2" style="margin-bottom:8px;">
+        <input type="text" id="officeAddr3" class="uppercase" maxlength="26" placeholder="Line 3">
+      </div>
+
+      <div class="row2">
+        <div class="field">
+          <label>Poskod / Postcode (Pejabat)</label>
+          <input type="text" id="officePoskod" maxlength="5">
+        </div>
+        <div class="field">
+          <label>Negeri / State (Pejabat)</label>
+          <select id="officeNegeri">
+            <option value="">Pilih Negeri</option>
+            <option>Johor</option><option>Kedah</option><option>Kelantan</option>
+            <option>Melaka</option><option>Negeri Sembilan</option><option>Pahang</option>
+            <option>Perak</option><option>Perlis</option><option>Pulau Pinang</option>
+            <option>Sabah</option><option>Sarawak</option><option>Selangor</option>
+            <option>Terengganu</option><option>WP Kuala Lumpur</option>
+            <option>WP Labuan</option><option>WP Putrajaya</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>Jika bekerja sendiri, no. pendaftaran perniagaan (jika berkenaan)</label>
+        <input type="text" id="businessRegNo" class="uppercase" maxlength="40">
+      </div>
+
+      <div class="field">
+        <label>Nama &amp; alamat majikan terdahulu (jika bekerja kurang 2 tahun dengan majikan sekarang) — pilihan</label>
+        <input type="text" id="prevEmployer1" class="uppercase" maxlength="45" placeholder="Line 1" style="margin-bottom:8px;">
+        <input type="text" id="prevEmployer2" class="uppercase" maxlength="45" placeholder="Line 2" style="margin-bottom:8px;">
+        <input type="text" id="prevEmployer3" class="uppercase" maxlength="45" placeholder="Line 3">
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Pendapatan Tahunan</h2>
+      <p class="sec-note">Annual Income</p>
+      <div class="row2">
+        <div class="field">
+          <label>Pendapatan Kasar Tahunan / Gross Annual Income (RM)</label>
+          <input type="number" id="grossIncome" min="0" step="100" required>
+        </div>
+        <div class="field">
+          <label>Lain-lain Pendapatan / Other Income (RM) — pilihan</label>
+          <input type="number" id="otherIncome" min="0" step="100">
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Kad Kredit/-i Atau Kad Caj Lain</h2>
+      <p class="sec-note">Other Credit Card/-i or Charge Cards (hanya untuk pendapatan RM36,000 setahun atau kurang dengan kad sedia ada daripada 2 pengeluar atau lebih)</p>
+      <div class="checkbox-row">
+        <input type="checkbox" id="hasOtherCards">
+        <label for="hasOtherCards">Saya ada kad kredit/-i sedia ada daripada pengeluar lain</label>
+      </div>
+      <div id="otherCardsFields" style="display:none;">
+        <div id="otherCardsRows"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Pengisytiharan Hutang</h2>
+      <p class="sec-note">Declaration of Debt Obligation with Non-Financial Institutions</p>
+      <div class="radio-group" data-group="hasDebt" style="margin-bottom:10px;">
+        <label class="radio-pill"><input type="radio" name="hasDebt" value="no" checked><span>Tiada baki hutang / No debt</span></label>
+        <label class="radio-pill"><input type="radio" name="hasDebt" value="yes"><span>Ada baki hutang / Have debt</span></label>
+      </div>
+      <div id="debtFields" style="display:none;">
+        <div id="debtRows"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Butiran Pasangan</h2>
+      <p class="sec-note">Spouse Details (jika berkenaan / if applicable)</p>
+      <div class="field">
+        <label>Nama seperti dalam Kad Pengenalan / Pasport</label>
+        <input type="text" id="spouseName" class="uppercase" maxlength="48">
+      </div>
+      <div class="row2">
+        <div class="field">
+          <label>Jika bekerja, nama Majikan</label>
+          <input type="text" id="spouseEmployer" class="uppercase" maxlength="35">
+        </div>
+        <div class="field">
+          <label>No. Tel. Bimbit / Mobile Tel. No.</label>
+          <input type="text" id="spouseMobile" placeholder="012-3456789" maxlength="13">
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Rujukan Kecemasan</h2>
+      <p class="sec-note">Emergency Contact</p>
+      <div class="field">
+        <label>Nama saudara rapat yang tidak tinggal serumah dengan pemohon</label>
+        <input type="text" id="emergencyName" class="uppercase" maxlength="24">
+      </div>
+      <div class="row2">
+        <div class="field">
+          <label>No. Tel. Bimbit / Mobile Tel. No.</label>
+          <input type="text" id="emergencyMobile" placeholder="012-3456789" maxlength="13">
+        </div>
+        <div class="field">
+          <label>Hubungan dengan Pemohon / Relationship</label>
+          <input type="text" id="emergencyRelationship" class="uppercase" maxlength="35">
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Butiran Kad Tambahan</h2>
+      <p class="sec-note">Supplementary Card Details</p>
+      <div class="checkbox-row">
+        <input type="checkbox" id="wantsSupp">
+        <label for="wantsSupp">Saya ingin memohon Kad Tambahan / I want to apply for a Supplementary Card</label>
+      </div>
+
+      <div id="suppFields" style="display:none;">
+        <div class="field">
+          <label>Nama seperti dalam Kad Pengenalan / Name as in NRIC</label>
+          <input type="text" id="suppName" class="uppercase" maxlength="48" placeholder="AHMAD BIN ABDULLAH">
+        </div>
+        <div class="field">
+          <label>Nama tertera di atas kad / Name to appear on card (max 19 letters)</label>
+          <input type="text" id="suppCardName" class="uppercase" maxlength="19">
+        </div>
+        <div class="row2">
+          <div class="field">
+            <label>Jantina / Gender</label>
+            <div class="radio-group" data-group="suppGender">
+              <label class="radio-pill"><input type="radio" name="suppGender" value="lelaki" checked><span>Lelaki / Male</span></label>
+              <label class="radio-pill"><input type="radio" name="suppGender" value="perempuan"><span>Perempuan / Female</span></label>
+            </div>
+          </div>
+          <div class="field">
+            <label>Hubungan dengan Pemohon / Relationship to Applicant</label>
+            <input type="text" id="suppRelationship" class="uppercase" maxlength="30">
+          </div>
+        </div>
+        <div class="field">
+          <label>Nama Penuh Ibu (Untuk pengesahan keselamatan) / Mother's Full Name</label>
+          <input type="text" id="suppMotherName" class="uppercase" maxlength="35">
+        </div>
+        <div class="row2">
+          <div class="field">
+            <label>Tarikh Lahir / Date of Birth</label>
+            <input type="date" id="suppDob">
+          </div>
+          <div class="field">
+            <label>No. Kad Pengenalan / NRIC No.</label>
+            <input type="text" id="suppNric" placeholder="900815-14-1234" maxlength="14">
+          </div>
+        </div>
+        <div class="row2">
+          <div class="field">
+            <label>No. Kad Pengenalan Lama / Old IC No. (jika ada)</label>
+            <input type="text" id="suppOldIc" maxlength="8">
+          </div>
+          <div class="field">
+            <label>No. Tel. Bimbit / Mobile Tel. No.</label>
+            <input type="text" id="suppMobile" placeholder="012-3456789" maxlength="13">
+          </div>
+        </div>
+        <div class="field">
+          <label>E-mel / Email</label>
+          <input type="email" id="suppEmail">
+        </div>
+
+        <div class="field">
+          <label>Penetapan Had Kredit/Kemudahan / Credit Limit Assignment</label>
+          <div class="radio-group" data-group="creditLimitOption">
+            <label class="radio-pill"><input type="radio" name="creditLimitOption" value="share" checked><span>Berkongsi had kredit saya / Share my limit</span></label>
+            <label class="radio-pill"><input type="radio" name="creditLimitOption" value="assign"><span>Tetapkan RM tertentu / Assign a specific amount</span></label>
+          </div>
+          <input type="number" id="creditLimitAmount" class="other-input" placeholder="RM" min="0" step="100" style="display:none;">
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Pengakuan</h2>
+      <p class="sec-note">Declaration</p>
+
+      <div class="checkbox-row">
+        <input type="checkbox" id="pdsAgree" checked required>
+        <label for="pdsAgree">YA, saya/kami telah membaca dan bersetuju dengan Penyata Pendedahan Produk (PPP) / I/We have read and agreed with the Product Disclosure Sheet</label>
+      </div>
+
+      <div class="field">
+        <label>Kaitan dengan Bank Simpanan Nasional / Connection to Bank Simpanan Nasional</label>
+        <div class="radio-group" data-group="connectedToBsn">
+          <label class="radio-pill"><input type="radio" name="connectedToBsn" value="no" checked><span>Tiada kaitan / Not connected</span></label>
+          <label class="radio-pill"><input type="radio" name="connectedToBsn" value="yes"><span>Ada kaitan / Connected</span></label>
+        </div>
+      </div>
+      <div id="connectedFields" style="display:none;">
+        <div class="row3">
+          <div class="field"><label>Nama Pihak Berkenaan</label><input type="text" id="connectedName" class="uppercase" maxlength="28"></div>
+          <div class="field"><label>No. KP/Pasport</label><input type="text" id="connectedNric" maxlength="18"></div>
+          <div class="field"><label>Jenis Perhubungan</label><input type="text" id="connectedRelationship" class="uppercase" maxlength="24"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Penzahiran Maklumat &amp; Perlindungan Kredit</h2>
+      <p class="sec-note">Disclosure of Information &amp; Credit Shield (pilihan / optional add-ons)</p>
+
+      <div class="field">
+        <label>Kebenaran perkongsian maklumat untuk jualan silang/pemasaran / Consent to share information for cross-selling/marketing</label>
+        <div class="radio-group" data-group="disclosureConsent">
+          <label class="radio-pill"><input type="radio" name="disclosureConsent" value="agree" checked><span>Bersetuju / Agree</span></label>
+          <label class="radio-pill"><input type="radio" name="disclosureConsent" value="disagree"><span>Tidak Bersetuju / Disagree</span></label>
+        </div>
+      </div>
+
+      <div class="field" id="islamicShieldField" style="display:none;">
+        <div class="checkbox-row">
+          <input type="checkbox" id="creditShieldAlAiman">
+          <label for="creditShieldAlAiman">BSN Al-Aiman Credit Shield (untuk Kad Islamik sahaja / Islamic cards only) — pilihan</label>
+        </div>
+      </div>
+
+      <div class="field" id="conventionalShieldField" style="display:none;">
+        <div class="checkbox-row">
+          <input type="checkbox" id="dontWorryCreditShield">
+          <label for="dontWorryCreditShield">Don't Worry Credit Shield (untuk Kad Konvensional sahaja / Conventional cards only) — pilihan</label>
+        </div>
+        <div class="checkbox-row">
+          <input type="checkbox" id="dontWorryBereavement">
+          <label for="dontWorryBereavement">Don't Worry Bereavement (RM6.00/bulan) — pilihan</label>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Pindahan Baki &amp; EasyCash BSN</h2>
+      <p class="sec-note">Balance Transfer &amp; EasyCash Application (pilihan / optional — hanya untuk ahli kad utama)</p>
+      <div class="checkbox-row">
+        <input type="checkbox" id="wantsBalanceTransfer">
+        <label for="wantsBalanceTransfer">Saya juga ingin memohon Pindahan Baki / EasyCash BSN / I also want to apply for BSN Balance Transfer / EasyCash</label>
+      </div>
+
+      <div id="btFields" style="display:none;">
+        <div class="field">
+          <label>Saya adalah / I am a</label>
+          <div class="radio-group" data-group="btApplicantType">
+            <label class="radio-pill"><input type="radio" name="btApplicantType" value="new" checked><span>Ahli Kad Baharu / New Cardmember</span></label>
+            <label class="radio-pill"><input type="radio" name="btApplicantType" value="existing"><span>Ahli Kad Sedia Ada / Existing Cardmember</span></label>
+          </div>
+        </div>
+        <div class="field">
+          <label>Saya ingin memohon / I wish to apply for</label>
+          <div class="radio-group" data-group="btProgram">
+            <label class="radio-pill"><input type="radio" name="btProgram" value="balancetransfer" checked><span>Program Pindahan Baki BSN</span></label>
+            <label class="radio-pill"><input type="radio" name="btProgram" value="easycash"><span>Pelan EasyCash BSN</span></label>
+          </div>
+        </div>
+        <p class="hint" style="margin:-6px 0 14px;">Nama, NRIC, no. tel. bimbit &amp; e-mel akan disalin daripada Butiran Peribadi di atas. Sila lengkapkan pelan &amp; kadar pada borang bercetak mengikut jadual semasa.</p>
+
+        <div class="field">
+          <label>No. Kad Kredit/-i BSN sedia ada / Existing BSN Credit Card No. (jika Ahli Kad Sedia Ada)</label>
+          <input type="text" id="btCardNo" placeholder="0000-0000-0000-0000" maxlength="19">
+        </div>
+
+        <div class="field">
+          <label>Butir-butir Permohonan / Application Details</label>
+          <div class="radio-group" data-group="btAmountType">
+            <label class="radio-pill"><input type="radio" name="btAmountType" value="fixed" checked><span>Jumlah Tetap (RM)</span></label>
+            <label class="radio-pill"><input type="radio" name="btAmountType" value="percent"><span>Peratus daripada Had Kredit (%)</span></label>
+          </div>
+          <input type="number" id="btAmount" class="other-input" placeholder="RM" min="500" step="100" style="margin-top:10px;">
+          <input type="number" id="btPercent" class="other-input" placeholder="%" min="1" max="80" style="display:none;margin-top:10px;">
+        </div>
+
+        <div class="row2">
+          <div class="field">
+            <label>Nama Bank / Bank Name (Akaun Pindahan)</label>
+            <input type="text" id="btBankName" class="uppercase" maxlength="30">
+          </div>
+          <div class="field">
+            <label>Jenis Akaun / Account Type</label>
+            <div class="radio-group" data-group="btAccountType">
+              <label class="radio-pill"><input type="radio" name="btAccountType" value="savings" checked><span>Simpanan / Savings</span></label>
+              <label class="radio-pill"><input type="radio" name="btAccountType" value="current"><span>Semasa / Current</span></label>
+            </div>
+          </div>
+        </div>
+        <div class="field">
+          <label>No. Akaun / Account No.</label>
+          <input type="text" id="btAccountNo" maxlength="23">
+        </div>
+
+        <p class="sec-note">Kad Kredit/-i Bank Lain (jika pindah baki daripada bank lain) — pilihan</p>
+        <div class="row3">
+          <div class="field"><label>No. Kad Kredit/-i Bank Lain</label><input type="text" id="btOtherCardNo" maxlength="20"></div>
+          <div class="field"><label>Bank Pengeluar</label><input type="text" id="btOtherBankName" class="uppercase" maxlength="24"></div>
+          <div class="field"><label>Amaun Pindahan (RM)</label><input type="number" id="btOtherAmount" min="0" step="100"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Tandatangan</h2>
+      <p class="sec-note">Signature — lukis guna tetikus/jari. Tandatangan akan dicetak pada setiap ruang tandatangan yang berkaitan di borang (Pengakuan, Perlindungan Kredit jika dipilih, Pindahan Baki jika berkenaan).</p>
+
+      <div class="field">
+        <label>Tarikh / Date</label>
+        <input type="date" id="signDate" style="max-width:200px;">
+      </div>
+
+      <div class="field">
+        <label>Tandatangan Pemohon Kad Utama / Principal Applicant Signature</label>
+        <div class="sigpad-wrap">
+          <canvas id="sigPrincipal" class="sigpad" width="600" height="150"></canvas>
+        </div>
+        <button type="button" class="btn-secondary" id="clearSigPrincipal" style="margin-top:8px;">Padam / Clear</button>
+      </div>
+
+      <div class="field" id="suppSigField" style="display:none;">
+        <label>Tandatangan Pemohon Kad Tambahan / Supplementary Applicant Signature</label>
+        <div class="sigpad-wrap">
+          <canvas id="sigSupp" class="sigpad" width="600" height="150"></canvas>
+        </div>
+        <button type="button" class="btn-secondary" id="clearSigSupp" style="margin-top:8px;">Padam / Clear</button>
+      </div>
+    </div>
+
+    <div class="btn-row">
+      <button type="submit" class="btn-primary" id="genBtn">Jana &amp; Semak PDF / Generate &amp; Preview PDF</button>
+    </div>
+    <div class="status" id="statusMsg"></div>
+  </form>
+
+  <div class="card" id="previewStage" style="display:none;">
+    <h2>Semak PDF / Review PDF</h2>
+    <p class="sec-note">Sila semak setiap muka surat dengan teliti sebelum meluluskan. Jika ada kesilapan, kembali edit borang.</p>
+    <iframe id="pdfPreviewFrame" class="pdf-preview-frame" title="PDF Preview"></iframe>
+    <div class="stage-actions">
+      <button type="button" class="btn-secondary" id="btnBackToEdit">Kembali Edit / Back to Edit</button>
+      <button type="button" class="btn-primary" id="btnApprove">Sah &amp; Teruskan / Approve &amp; Continue</button>
+    </div>
+  </div>
+
+  <div class="card" id="approvedStage" style="display:none;">
+    <h2>Diluluskan / Approved</h2>
+    <p class="sec-note">Borang anda telah disahkan. Muat turun salinan di bawah.</p>
+    <div class="stage-actions">
+      <button type="button" class="btn-secondary" id="btnReeditAfterApprove">Kembali Edit / Back to Edit</button>
+      <a href="#" id="btnDownloadApproved" class="btn-primary" style="text-align:center;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;">Muat Turun PDF / Download PDF</a>
+    </div>
+
+    <div class="checkbox-row" style="margin-top:18px;">
+      <input type="checkbox" id="consentApply">
+      <label for="consentApply">Saya bersetuju untuk memohon Kad Kredit ini / I agree to apply for this Credit Card</label>
+    </div>
+    <p class="hint" style="margin:-4px 0 10px;">Ini akan menghantar mesej pemberitahuan ke WhatsApp banker. Dokumen sokongan dimuat naik secara berasingan melalui borang di bawah.</p>
+    <a href="#" id="btnWhatsappApply" class="btn-whatsapp" style="pointer-events:none;opacity:.5;" target="_blank" rel="noopener noreferrer">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.6 6.32A8.86 8.86 0 0 0 12.05 4C7.14 4 3.13 8 3.13 12.9c0 1.6.42 3.14 1.2 4.5L3 21l3.7-1.3a8.9 8.9 0 0 0 4.35 1.14h.01c4.91 0 8.92-4 8.92-8.9a8.84 8.84 0 0 0-2.38-6.62zM12.06 19.4h-.01a7.4 7.4 0 0 1-3.77-1.03l-.27-.16-2.8.97.94-2.72-.18-.28a7.36 7.36 0 0 1-1.14-3.94c0-4.08 3.33-7.4 7.44-7.4a7.4 7.4 0 0 1 5.26 2.17 7.32 7.32 0 0 1 2.17 5.23c0 4.08-3.33 7.4-7.44 7.4zm4.08-5.54c-.22-.11-1.32-.65-1.53-.72-.2-.08-.35-.11-.5.11-.15.22-.58.72-.7.87-.13.15-.26.16-.48.05-.22-.11-.94-.35-1.79-1.11-.66-.59-1.11-1.32-1.24-1.54-.13-.22-.01-.34.1-.45.1-.1.22-.26.33-.38.11-.13.15-.22.22-.37.07-.15.04-.28-.02-.39-.06-.11-.5-1.2-.68-1.65-.18-.43-.36-.37-.5-.38h-.43c-.15 0-.39.06-.59.28-.2.22-.77.75-.77 1.84s.79 2.13.9 2.28c.11.15 1.55 2.36 3.75 3.31.52.22.93.36 1.25.46.53.17 1.01.14 1.39.09.42-.06 1.32-.54 1.51-1.06.19-.52.19-.96.13-1.06-.06-.09-.2-.15-.42-.26z"/></svg>
+      <span>Hantar ke WhatsApp / Send to WhatsApp</span>
+    </a>
+  </div>
+
+  <div class="card" id="docUploadStage" style="display:none;">
+    <h2>Muat Naik Dokumen Sokongan / Upload Supporting Documents</h2>
+    <p class="sec-note">Sila sediakan dokumen berikut, kemudian muat naik semuanya (termasuk PDF yang telah dimuat turun di atas) dalam satu borang.</p>
+    <ul style="margin:0 0 16px;padding-left:20px;font-size:.85rem;line-height:1.7;color:var(--text);">
+      <li>Kad Pengenalan (depan &amp; belakang)<span id="docSuppIcNote" style="display:none;">, termasuk Pemohon Tambahan</span></li>
+      <li id="docIncomeItem"></li>
+      <li>Borang PDF yang telah dimuat turun di atas</li>
+    </ul>
+
+    <div class="folder-tag">
+      <span>Nama pemohon (guna dalam borang muat naik):</span>
+      <code id="driveFolderName">-</code>
+      <button type="button" class="btn-copy" id="btnCopyFolderName">Salin / Copy</button>
+    </div>
+    <a href="#" id="driveFolderLink" class="btn-primary" style="display:block;text-align:center;text-decoration:none;padding:13px 16px;margin-top:6px;" target="_blank" rel="noopener noreferrer">Buka Borang Muat Naik Dokumen / Open Document Upload Form</a>
+  </div>
+
+  <div class="footnote">Borang tidak rasmi — untuk tujuan pratonton sahaja. Sila semak dan tandatangan borang rasmi BSN sebelum dihantar.<br>Unofficial preview form — please review and sign the official BSN form before submission.</div>
+</div>
+
+<script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js" integrity="sha384-weMABwrltA6jWR8DDe9Jp5blk+tZQh7ugpCsF3JwSA53WZM9/14PjS5LAJNHNjAI" crossorigin="anonymous"></script>
+<script>
+const PDF_URL = 'bsn-credit-card-form.pdf';
+const PAGE_H = 841.89;
+const fy = (y) => PAGE_H - y;
+
+// Toggle "Lain-lain" free-text inputs
+function wireOther(groupName, otherId){
+  const radios = document.querySelectorAll(`input[name="${groupName}"]`);
+  const otherInput = document.getElementById(otherId);
+  radios.forEach(r => r.addEventListener('change', () => {
+    otherInput.style.display = (r.value === 'lain' && r.checked) ? 'block' : 'none';
+  }));
+}
+wireOther('salutation','salutationOther');
+wireOther('marital','maritalOther');
+wireOther('race','raceOther');
+wireOther('education','educationOther');
+
+// --- Card type selection ---
+const cardTypeSelect = document.getElementById('cardType');
+const networkField = document.getElementById('networkField');
+const gcardSectorField = document.getElementById('gcardSectorField');
+const aiafamField = document.getElementById('aiafamField');
+const uumField = document.getElementById('uumField');
+const mastercardRadio = document.querySelector('input[name="network"][value="mastercard"]');
+const visaRadio = document.querySelector('input[name="network"][value="visa"]');
+const NETWORK_NA = new Set(['islamic-teachers','conv-cashback','conv-teachers']);
+const COBRAND = new Set(['cobrand-gcard-islamic','cobrand-gcard','cobrand-aiafam','cobrand-uum-platinum','cobrand-uum-emas']);
+function updateCardTypeFields(){
+  const v = cardTypeSelect.value;
+  networkField.style.display = COBRAND.has(v) ? 'none' : 'block';
+  if (NETWORK_NA.has(v)) { visaRadio.checked = true; mastercardRadio.disabled = true; }
+  else { mastercardRadio.disabled = false; }
+  gcardSectorField.style.display = (v === 'cobrand-gcard-islamic' || v === 'cobrand-gcard') ? 'block' : 'none';
+  aiafamField.style.display = (v === 'cobrand-aiafam') ? 'block' : 'none';
+  uumField.style.display = (v === 'cobrand-uum-platinum' || v === 'cobrand-uum-emas') ? 'block' : 'none';
+  const isIslamicFamily = v.startsWith('islamic') || v === 'cobrand-gcard-islamic' || v === 'cobrand-uum-platinum' || v === 'cobrand-uum-emas';
+  const isConvFamily = v.startsWith('conv') || v === 'cobrand-gcard' || v === 'cobrand-aiafam';
+  document.getElementById('islamicShieldField').style.display = isIslamicFamily ? 'block' : 'none';
+  document.getElementById('conventionalShieldField').style.display = isConvFamily ? 'block' : 'none';
+}
+cardTypeSelect.addEventListener('change', updateCardTypeFields);
+updateCardTypeFields();
+
+// --- Delivery instructions ---
+const branchNameInput = document.getElementById('branchName');
+document.querySelectorAll('input[name="delivery"]').forEach(r => r.addEventListener('change', () => {
+  const isCawangan = getRadioValue('delivery') === 'cawangan';
+  branchNameInput.style.display = isCawangan ? 'block' : 'none';
+  branchNameInput.required = isCawangan;
+}));
+
+const mailFieldIds = ['mailAddr1','mailPoskod','mailNegeri'];
+document.getElementById('sameMailing').addEventListener('change', (e) => {
+  document.getElementById('mailingFields').style.display = e.target.checked ? 'none' : 'block';
+  mailFieldIds.forEach(id => { document.getElementById(id).required = !e.target.checked; });
+});
+
+// Uppercase-as-you-type for text fields flagged .uppercase
+document.querySelectorAll('input.uppercase').forEach(inp => {
+  inp.addEventListener('input', () => { inp.value = inp.value.toUpperCase(); });
+});
+
+// --- Signature pads ---
+document.getElementById('signDate').valueAsDate = new Date();
+
+function setupSignaturePad(canvasId, clearBtnId){
+  const canvas = document.getElementById(canvasId);
+  const ctx = canvas.getContext('2d');
+  // Fixed internal buffer (matches the width/height attributes in HTML) — CSS may
+  // stretch the element visually, but we map pointer coordinates into this fixed
+  // space below, so drawing stays correct regardless of layout/viewport quirks.
+  ctx.lineWidth = 3;
+  ctx.lineCap = 'round';
+  ctx.strokeStyle = '#1a1a1a';
+
+  let drawing = false, hasDrawn = false, last = null;
+  function pos(e){
+    const rect = canvas.getBoundingClientRect();
+    const p = e.touches ? e.touches[0] : e;
+    const rw = rect.width || canvas.width;
+    const rh = rect.height || canvas.height;
+    return {
+      x: (p.clientX - rect.left) * (canvas.width / rw),
+      y: (p.clientY - rect.top) * (canvas.height / rh),
+    };
+  }
+  function start(e){ drawing = true; hasDrawn = true; last = pos(e); e.preventDefault(); }
+  function move(e){
+    if (!drawing) return;
+    const p = pos(e);
+    ctx.beginPath(); ctx.moveTo(last.x, last.y); ctx.lineTo(p.x, p.y); ctx.stroke();
+    last = p; e.preventDefault();
+  }
+  function end(){ drawing = false; }
+  canvas.addEventListener('mousedown', start);
+  canvas.addEventListener('mousemove', move);
+  window.addEventListener('mouseup', end);
+  canvas.addEventListener('touchstart', start, { passive: false });
+  canvas.addEventListener('touchmove', move, { passive: false });
+  canvas.addEventListener('touchend', end);
+
+  document.getElementById(clearBtnId).addEventListener('click', () => {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    hasDrawn = false;
+  });
+
+  return {
+    isEmpty: () => !hasDrawn,
+    toPngBytes: async () => {
+      const dataUrl = canvas.toDataURL('image/png');
+      const res = await fetch(dataUrl);
+      return new Uint8Array(await res.arrayBuffer());
+    }
+  };
+}
+const sigPrincipal = setupSignaturePad('sigPrincipal', 'clearSigPrincipal');
+const sigSupp = setupSignaturePad('sigSupp', 'clearSigSupp');
+
+// Auto-format NRIC (######-##-####) and mobile (###-#######)
+document.getElementById('nric').addEventListener('input', (e) => {
+  let d = e.target.value.replace(/\D/g,'').slice(0,12);
+  let out = d.slice(0,6);
+  if (d.length > 6) out += '-' + d.slice(6,8);
+  if (d.length > 8) out += '-' + d.slice(8,12);
+  e.target.value = out;
+});
+document.getElementById('mobile').addEventListener('input', (e) => {
+  let d = e.target.value.replace(/\D/g,'').slice(0,10);
+  let out = d.slice(0,3);
+  if (d.length > 3) out += '-' + d.slice(3,10);
+  e.target.value = out;
+});
+document.getElementById('officeTel').addEventListener('input', (e) => {
+  let d = e.target.value.replace(/\D/g,'').slice(0,10);
+  let out = d.slice(0,3);
+  if (d.length > 3) out += '-' + d.slice(3,10);
+  e.target.value = out;
+});
+['poskod','mailPoskod','oldIc','dependants','occupancy','officePoskod','serviceYears','serviceMonths'].forEach(id=>{
+  const el = document.getElementById(id);
+  if (!el) return;
+  if (el.type === 'text') el.addEventListener('input', ()=>{ el.value = el.value.replace(/\D/g,''); });
+});
+
+// --- Other Credit Cards rows (up to 2) ---
+const otherCardsContainer = document.getElementById('otherCardsRows');
+for (let i=0;i<2;i++){
+  const row = document.createElement('div');
+  row.className = 'row2';
+  row.style.marginBottom = '10px';
+  row.innerHTML = `
+    <div class="field"><label>Bank (Baris ${i+1})</label><input type="text" class="uppercase oc-bank" maxlength="20"></div>
+    <div class="field"><label>No. Kad</label><input type="text" class="oc-cardno" maxlength="24"></div>
+    <div class="field"><label>Ahli Sejak / Member Since</label><input type="text" class="oc-since" maxlength="12" placeholder="MM/YYYY"></div>
+    <div class="field"><label>Had Kredit/Kemudahan (RM)</label><input type="number" class="oc-limit" min="0" step="100"></div>
+  `;
+  otherCardsContainer.appendChild(row);
+}
+otherCardsContainer.querySelectorAll('input.uppercase').forEach(inp => {
+  inp.addEventListener('input', () => { inp.value = inp.value.toUpperCase(); });
+});
+document.getElementById('hasOtherCards').addEventListener('change', (e) => {
+  document.getElementById('otherCardsFields').style.display = e.target.checked ? 'block' : 'none';
+});
+
+// --- Debt rows (up to 3) ---
+const debtContainer = document.getElementById('debtRows');
+for (let i=0;i<3;i++){
+  const row = document.createElement('div');
+  row.className = 'row3';
+  row.style.marginBottom = '10px';
+  row.innerHTML = `
+    <div class="field"><label>Pemberi Hutang (Baris ${i+1})</label><input type="text" class="uppercase debt-creditor" maxlength="20"></div>
+    <div class="field"><label>Jenis Kemudahan</label><input type="text" class="uppercase debt-type" maxlength="18"></div>
+    <div class="field"><label>Amaun (RM)</label><input type="number" class="debt-amount" min="0" step="10"></div>
+  `;
+  debtContainer.appendChild(row);
+  const row2 = document.createElement('div');
+  row2.className = 'row2';
+  row2.style.marginBottom = '18px';
+  row2.innerHTML = `
+    <div class="field"><label>Baki Belum Jelas (RM)</label><input type="number" class="debt-outstanding" min="0" step="10"></div>
+    <div class="field"><label>Ansuran Bulanan (RM)</label><input type="number" class="debt-installment" min="0" step="10"></div>
+  `;
+  debtContainer.appendChild(row2);
+}
+debtContainer.querySelectorAll('input.uppercase').forEach(inp => {
+  inp.addEventListener('input', () => { inp.value = inp.value.toUpperCase(); });
+});
+document.querySelectorAll('input[name="hasDebt"]').forEach(r => r.addEventListener('change', () => {
+  document.getElementById('debtFields').style.display = (getRadioValue('hasDebt') === 'yes') ? 'block' : 'none';
+}));
+
+// --- Balance Transfer / EasyCash toggle ---
+document.getElementById('wantsBalanceTransfer').addEventListener('change', (e) => {
+  document.getElementById('btFields').style.display = e.target.checked ? 'block' : 'none';
+});
+document.querySelectorAll('input[name="btAmountType"]').forEach(r => r.addEventListener('change', () => {
+  const isFixed = getRadioValue('btAmountType') === 'fixed';
+  document.getElementById('btAmount').style.display = isFixed ? 'block' : 'none';
+  document.getElementById('btPercent').style.display = isFixed ? 'none' : 'block';
+}));
+document.getElementById('btCardNo').addEventListener('input', (e) => {
+  let d = e.target.value.replace(/\D/g,'').slice(0,16);
+  e.target.value = d.match(/.{1,4}/g)?.join('-') || d;
+});
+document.getElementById('btAccountNo').addEventListener('input', (e) => { e.target.value = e.target.value.replace(/\D/g,'').slice(0,23); });
+
+// --- Connected to BSN toggle ---
+document.querySelectorAll('input[name="connectedToBsn"]').forEach(r => r.addEventListener('change', () => {
+  document.getElementById('connectedFields').style.display = (getRadioValue('connectedToBsn') === 'yes') ? 'block' : 'none';
+}));
+
+// --- Supplementary card toggle ---
+const suppFieldIds = ['suppName','suppCardName','suppDob','suppNric','suppMobile','suppEmail'];
+document.getElementById('wantsSupp').addEventListener('change', (e) => {
+  document.getElementById('suppFields').style.display = e.target.checked ? 'block' : 'none';
+  suppFieldIds.forEach(id => { document.getElementById(id).required = e.target.checked; });
+  document.getElementById('suppSigField').style.display = e.target.checked ? 'block' : 'none';
+});
+document.querySelectorAll('input[name="creditLimitOption"]').forEach(r => r.addEventListener('change', () => {
+  document.getElementById('creditLimitAmount').style.display = (getRadioValue('creditLimitOption') === 'assign') ? 'block' : 'none';
+}));
+document.getElementById('spouseMobile').addEventListener('input', (e) => {
+  let d = e.target.value.replace(/\D/g,'').slice(0,10);
+  let out = d.slice(0,3); if (d.length > 3) out += '-' + d.slice(3,10);
+  e.target.value = out;
+});
+document.getElementById('emergencyMobile').addEventListener('input', (e) => {
+  let d = e.target.value.replace(/\D/g,'').slice(0,10);
+  let out = d.slice(0,3); if (d.length > 3) out += '-' + d.slice(3,10);
+  e.target.value = out;
+});
+document.getElementById('suppMobile').addEventListener('input', (e) => {
+  let d = e.target.value.replace(/\D/g,'').slice(0,10);
+  let out = d.slice(0,3); if (d.length > 3) out += '-' + d.slice(3,10);
+  e.target.value = out;
+});
+document.getElementById('suppNric').addEventListener('input', (e) => {
+  let d = e.target.value.replace(/\D/g,'').slice(0,12);
+  let out = d.slice(0,6);
+  if (d.length > 6) out += '-' + d.slice(6,8);
+  if (d.length > 8) out += '-' + d.slice(8,12);
+  e.target.value = out;
+});
+document.getElementById('suppOldIc').addEventListener('input', (e) => { e.target.value = e.target.value.replace(/\D/g,''); });
+
+function getRadioValue(name){
+  const el = document.querySelector(`input[name="${name}"]:checked`);
+  return el ? el.value : null;
+}
+
+function buildCellRow(xs){
+  const cells = [];
+  for (let i=0;i<xs.length-1;i++) cells.push([xs[i], xs[i+1]]);
+  return cells;
+}
+function evenCells(x0, x1, n){
+  const w = (x1 - x0) / n;
+  const cells = [];
+  for (let i=0;i<n;i++) cells.push([x0 + i*w, x0 + (i+1)*w]);
+  return cells;
+}
+
+async function generatePdf(data){
+  const existingBytes = await fetch(PDF_URL).then(r => {
+    if (!r.ok) throw new Error('Tidak dapat memuatkan borang PDF asal (' + r.status + ')');
+    return r.arrayBuffer();
+  });
+  const { PDFDocument, StandardFonts, rgb } = PDFLib;
+  const pdfDoc = await PDFDocument.load(existingBytes);
+  const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
+  const fontBold = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
+  const page1 = pdfDoc.getPages()[0]; // page 1 (0-indexed)
+  const page3 = pdfDoc.getPages()[2]; // page 3 (0-indexed)
+  const page4 = pdfDoc.getPages()[3]; // page 4 (0-indexed)
+  const page5 = pdfDoc.getPages()[4]; // page 5 (0-indexed)
+  const page6 = pdfDoc.getPages()[5]; // page 6 (0-indexed)
+  const page7 = pdfDoc.getPages()[6]; // page 7 (0-indexed)
+  const page = pdfDoc.getPages()[1]; // page 2 (0-indexed)
+  const ink = rgb(0.05, 0.05, 0.35);
+  const tickColor = rgb(0.7, 0, 0);
+
+  function drawInCell(pg, text, x0, x1, y0, y1){
+    if (!text) return;
+    const size = (y1 - y0) * 1.05;
+    const w = fontBold.widthOfTextAtSize(text, size);
+    const cx = (x0 + x1) / 2 - w / 2;
+    const baseline = fy(y1) + (y1 - y0) * 0.18;
+    pg.drawText(text, { x: cx, y: baseline, size, font: fontBold, color: ink });
+  }
+  function drawGrid(pg, str, cells, y0, y1){
+    (str || '').split('').forEach((ch, i) => { if (cells[i]) drawInCell(pg, ch, cells[i][0], cells[i][1], y0, y1); });
+  }
+  function tick(pg, x0, x1, y0, y1){
+    const size = (y1 - y0) * 1.15;
+    const w = fontBold.widthOfTextAtSize('X', size);
+    const cx = (x0 + x1) / 2 - w / 2;
+    const baseline = fy(y1) + (y1 - y0) * 0.12;
+    pg.drawText('X', { x: cx, y: baseline, size, font: fontBold, color: tickColor });
+  }
+  function lineText(pg, str, x, yBaselineFitz, size = 7){
+    if (!str) return;
+    pg.drawText(String(str), { x, y: fy(yBaselineFitz) + 1.5, size, font: fontBold, color: ink });
+  }
+
+  // --- Gelaran ---
+  const salutationBoxes = { encik:[69.7,77.7,33.8,42.3], puan:[111.6,119.6,33.8,42.3], cik:[155.5,163.6,33.8,42.3], lain:[192.3,200.4,33.8,42.3] };
+  const sb = salutationBoxes[data.salutation];
+  if (sb) tick(page, ...sb);
+  if (data.salutation === 'lain') lineText(page, data.salutationOther, 236.1, 50.2, 7);
+
+  // --- Full name (2 rows x 26 boxes) ---
+  const row1x = [21.2,31.8,42.4,53.0,63.5,74.1,84.7,95.3,105.8,116.4,127.0,137.6,148.1,158.7,169.3,179.9,190.4,201.0,211.6,222.2,232.7,243.3,253.9,264.5,275.0,285.4,295.9];
+  const nameCells = buildCellRow(row1x);
+  const fullName = (data.fullName || '').slice(0,52);
+  drawGrid(page, fullName.slice(0,26), nameCells, 67.9, 74.7);
+  drawGrid(page, fullName.slice(26,52), nameCells, 79.5, 86.3);
+
+  // --- Card name (19 boxes) ---
+  const cardNameX = [21.2,31.8,42.4,53.0,63.5,74.1,84.7,95.3,105.8,116.4,127.0,137.6,148.1,158.7,169.3,179.9,190.4,201.0,211.6,222.2];
+  drawGrid(page, (data.cardName||'').slice(0,19), buildCellRow(cardNameX), 113.0, 119.9);
+
+  // --- Gender ---
+  if (data.gender === 'lelaki') tick(page, 242.4,250.5,97.2,106.0);
+  else if (data.gender === 'perempuan') tick(page, 242.4,250.6,109.1,117.8);
+
+  // --- DOB ---
+  if (data.dobDD) drawGrid(page, data.dobDD, [[126.7,137.2],[137.2,147.8]], 136.2, 143.1);
+  if (data.dobMM) drawGrid(page, data.dobMM, [[155.9,166.4],[166.4,177.0]], 136.2, 143.1);
+  if (data.dobYYYY) drawGrid(page, data.dobYYYY, [[185.1,195.6],[195.6,206.2],[206.2,216.8],[216.8,227.4]], 136.2, 143.1);
+
+  // --- NRIC ---
+  const nricDigits = (data.nric || '').replace(/\D/g,'');
+  drawGrid(page, nricDigits.slice(0,6), [[133.9,144.5],[144.5,155.0],[155.0,165.6],[165.6,176.2],[176.2,186.8],[186.8,197.3]], 149.7, 156.6);
+  drawGrid(page, nricDigits.slice(6,8), [[207.0,217.5],[217.5,228.1]], 149.4, 156.3);
+  drawGrid(page, nricDigits.slice(8,12), [[238.7,249.3],[249.3,259.9],[259.9,270.5],[270.5,281.1]], 149.4, 156.3);
+
+  // --- Old IC ---
+  drawGrid(page, (data.oldIc||'').slice(0,8), [[155.4,166.0],[166.0,176.5],[176.5,187.1],[187.1,197.7],[197.7,208.3],[208.3,218.8],[218.8,229.4],[229.4,240.0]], 162.7, 169.6);
+
+  // --- Marital status ---
+  const maritalBoxes = { bujang:[96.7,104.7,175.9,184.4], berkahwin:[151.9,160.0,175.9,184.4], lain:[213.2,221.3,175.9,184.4] };
+  const mb = maritalBoxes[data.marital];
+  if (mb) tick(page, ...mb);
+  if (data.marital === 'lain') lineText(page, data.maritalOther, 252.5, 190.2, 7);
+
+  // --- Dependants ---
+  drawGrid(page, String(data.dependants ?? '').padStart(2,'0').slice(-2), [[146.0,156.6],[156.6,167.2]], 196.7, 203.6);
+
+  // --- Race ---
+  const raceBoxes = { melayu:[56.1,64.2,209.3,217.8], cina:[103.8,111.9,209.3,217.8], india:[149.8,157.9,209.3,217.8], lain:[189.5,197.6,209.3,217.8] };
+  const rb = raceBoxes[data.race];
+  if (rb) tick(page, ...rb);
+  if (data.race === 'lain') lineText(page, data.raceOther, 229.1, 223.9, 7);
+
+  // --- Residency ---
+  if (data.residency === 'bumi') tick(page, 87.7,95.8,229.3,237.8);
+  else if (data.residency === 'nonbumi') tick(page, 144.3,152.3,229.3,237.8);
+
+  // --- Education ---
+  const eduBoxes = { sijil:[313.9,322.0,239.6,248.1], diploma:[368.9,377.0,238.6,247.1], ijazah:[418.8,426.9,238.6,247.1], lain:[462.1,470.1,239.2,247.7] };
+  const eb = eduBoxes[data.education];
+  if (eb) tick(page, ...eb);
+  if (data.education === 'lain') lineText(page, data.educationOther, 503.4, 253.9, 7);
+
+  // --- Residential address ---
+  lineText(page, data.addr1, 315.6, 48.9);
+  lineText(page, data.addr2, 315.6, 57.4);
+  lineText(page, data.addr3, 315.6, 66.0);
+  drawGrid(page, (data.poskod||'').slice(0,5), [[315.5,326.1],[326.1,336.7],[336.7,347.2],[347.2,357.8],[357.8,368.4]], 83.6, 90.4);
+  lineText(page, data.negeri, 416.1, 90.3);
+
+  // --- Ownership ---
+  const ownBoxes = { sendiri:[314.5,322.6,99.2,107.8], sewa:[378.7,386.8,99.2,107.8], gadaijanji:[415.4,423.5,99.2,107.8], saudara:[465.8,473.9,99.2,107.8], lain:[529.1,537.2,99.2,107.8] };
+  const ob = ownBoxes[data.ownership];
+  if (ob) tick(page, ...ob);
+
+  // --- Occupancy years ---
+  drawGrid(page, String(data.occupancy ?? '').padStart(2,'0').slice(-2), [[450.1,460.7],[460.7,471.3]], 122.5, 129.4);
+
+  // --- Mailing address ---
+  const mAddr1 = data.sameMailing ? data.addr1 : data.mailAddr1;
+  const mAddr2 = data.sameMailing ? data.addr2 : data.mailAddr2;
+  const mPoskod = data.sameMailing ? data.poskod : data.mailPoskod;
+  const mNegeri = data.sameMailing ? data.negeri : data.mailNegeri;
+  lineText(page, mAddr1, 314.7, 161.4);
+  lineText(page, mAddr2, 314.7, 169.4);
+  drawGrid(page, (mPoskod||'').slice(0,5), [[315.9,326.5],[326.5,337.1],[337.1,347.6],[347.6,358.2],[358.2,368.8]], 185.8, 192.7);
+  lineText(page, mNegeri, 416.1, 192.5, 7);
+
+  // --- Contact ---
+  const mobileDigits = (data.mobile||'').replace(/\D/g,'');
+  drawGrid(page, mobileDigits.slice(0,3), [[422.5,433.1],[433.1,443.7],[443.7,454.3]], 200.6, 207.5);
+  drawGrid(page, mobileDigits.slice(3,10), [[464.8,475.4],[475.4,486.0],[486.0,496.6],[496.6,507.2],[507.2,517.7],[517.7,528.3],[528.3,538.9]], 200.6, 207.5);
+  lineText(page, data.email, 366.6, 220.6, 7);
+
+  // --- Pengesahan Keselamatan: Mother's name (52-cell single row, full width) ---
+  drawGrid(page, (data.motherName||'').slice(0,52), evenCells(21.0, 571.6, 52), 287.4, 294.3);
+
+  // --- Butiran Pekerjaan ---
+  drawGrid(page, (data.employerName||'').slice(0,26), evenCells(21.0, 295.4, 26), 337.2, 344.1);
+  lineText(page, data.natureOfBusiness, 152.5, 354.5);
+  lineText(page, data.position, 86.4, 366.8);
+  drawGrid(page, String(data.serviceYears ?? '').padStart(2,'0').slice(-2), evenCells(20.9, 42.1, 2), 382.4, 389.3);
+  drawGrid(page, String(data.serviceMonths ?? '').padStart(2,'0').slice(-2), evenCells(98.3, 119.4, 2), 382.4, 389.3);
+  drawGrid(page, (data.officeAddr1||'').slice(0,26), evenCells(20.9, 295.4, 26), 405.5, 412.3);
+  drawGrid(page, (data.officeAddr2||'').slice(0,26), evenCells(20.9, 295.4, 26), 417.3, 424.2);
+  drawGrid(page, (data.officeAddr3||'').slice(0,26), evenCells(20.9, 295.4, 26), 428.8, 435.6);
+  drawGrid(page, (data.officePoskod||'').slice(0,5), evenCells(88.3, 141.2, 5), 445.7, 452.6);
+  lineText(page, data.officeNegeri, 195.8, 452.6);
+  lineText(page, data.businessRegNo, 315.8, 366.0);
+  lineText(page, data.prevEmployer1, 315.8, 402.0);
+  lineText(page, data.prevEmployer2, 315.8, 413.2);
+  lineText(page, data.prevEmployer3, 315.8, 424.3);
+  const officeTelDigits = (data.officeTel||'').replace(/\D/g,'');
+  drawGrid(page, officeTelDigits.slice(0,3), evenCells(427.7, 459.5, 3), 326.8, 333.7);
+  drawGrid(page, officeTelDigits.slice(3,10), evenCells(470.0, 544.1, 7), 326.8, 333.7);
+
+  // --- Pendapatan Tahunan ---
+  lineText(page, data.grossIncome ? Number(data.grossIncome).toLocaleString('en-MY') : '', 201.5, 485.6);
+  lineText(page, data.otherIncome ? Number(data.otherIncome).toLocaleString('en-MY') : '', 515.0, 483.7, 7);
+
+  // --- Kad Kredit/-i Atau Kad Caj Lain (up to 2 rows) ---
+  if (data.otherCards && data.otherCards.length){
+    const rowsY = [[590.2,600.5],[600.5,610.8]];
+    data.otherCards.slice(0,2).forEach((c, i) => {
+      const [y0,y1] = rowsY[i];
+      lineText(page, c.bank, 18.5, y1-2.5, 7);
+      lineText(page, c.cardNo, 124.7, y1-2.5, 7);
+      lineText(page, c.since, 256.1, y1-2.5, 7);
+      lineText(page, c.limit ? Number(c.limit).toLocaleString('en-MY') : '', 377.5, y1-2.5, 7);
+    });
+  }
+
+  // --- Pengisytiharan Hutang ---
+  if (data.hasDebt === 'no'){
+    tick(page, 20.8, 28.9, 666.7, 675.2);
+  } else if (data.hasDebt === 'yes'){
+    tick(page, 286.5, 294.6, 666.7, 675.2);
+    const rowsY = [[720.2,730.7],[730.7,740.9],[740.9,751.5]];
+    (data.debts||[]).slice(0,3).forEach((d, i) => {
+      const [y0,y1] = rowsY[i];
+      lineText(page, d.creditor, 18.5, y1-3, 7);
+      lineText(page, d.type, 151.9, y1-3, 7);
+      lineText(page, d.amount ? Number(d.amount).toLocaleString('en-MY') : '', 274.9, y1-3, 7);
+      lineText(page, d.outstanding ? Number(d.outstanding).toLocaleString('en-MY') : '', 364.5, y1-3, 7);
+      lineText(page, d.installment ? Number(d.installment).toLocaleString('en-MY') : '', 473.8, y1-3, 7);
+    });
+  }
+
+  // ============ PAGE 1 ============
+
+  // --- Application type (top) ---
+  const appTypeBoxes = {
+    kerajaan:[17.1,25.2,332.7,341.2], glc:[199.7,207.8,332.7,341.2],
+    swasta:[17.4,25.4,344.0,352.5], sendiri:[199.7,207.8,343.6,352.1],
+    komisen:[341.7,349.7,343.6,352.1],
+  };
+  const atb = appTypeBoxes[data.appType];
+  if (atb) tick(page1, ...atb);
+
+  // --- Card type table ---
+  const cardRowY = { platinum:[397.8,406.3], cashback:[412.6,421.1], emas:[428.1,436.6], klasik:[443.7,452.2], teachers:[459.2,467.9] };
+  const islamicX = [27.4,35.5], convX = [192.2,200.2], visaX = [331.9,339.9], mcX = [392.9,400.9];
+  const ctParts = (data.cardType || '').split('-');
+  const ctFamily = ctParts[0]; // islamic | conv | cobrand
+  const ctRow = ctParts.slice(1).join('-'); // platinum | emas | klasik | teachers | cashback | gcard-islamic | gcard | aiafam | uum-platinum | uum-emas
+
+  if (ctFamily === 'islamic' || ctFamily === 'conv'){
+    const y = cardRowY[ctRow];
+    if (y){
+      if (ctFamily === 'islamic') tick(page1, islamicX[0], islamicX[1], y[0], y[1]);
+      else tick(page1, convX[0], convX[1], y[0], y[1]);
+      if (data.network === 'mastercard') tick(page1, mcX[0], mcX[1], y[0], y[1]);
+      else tick(page1, visaX[0], visaX[1], y[0], y[1]);
+    }
+  } else if (ctFamily === 'cobrand'){
+    if (ctRow === 'gcard-islamic') tick(page1, 20.3,28.4,524.0,532.5);
+    else if (ctRow === 'gcard') tick(page1, 177.0,185.1,524.0,532.5);
+    if (ctRow === 'gcard-islamic' || ctRow === 'gcard'){
+      if (data.gcardSector === 'glc') tick(page1, 293.4,301.5,535.9,544.4);
+      else tick(page1, 177.4,185.5,535.9,544.4);
+    }
+    if (ctRow === 'aiafam'){
+      tick(page1, 20.3,28.3,586.5,595.1);
+      if (data.aiafamOption === 'zerointerest') tick(page1, 191.2,199.2,624.6,633.1);
+      else tick(page1, 20.3,28.3,624.6,633.1);
+    }
+    if (ctRow === 'uum-platinum') tick(page1, 20.3,28.4,661.0,669.5);
+    else if (ctRow === 'uum-emas') tick(page1, 303.9,311.9,660.5,669.1);
+    if (ctRow === 'uum-platinum' || ctRow === 'uum-emas'){
+      if (data.uumStatus === 'graduate') tick(page1, 241.5,249.5,688.4,697.0);
+      else tick(page1, 104.1,112.2,688.4,697.0);
+    }
+  }
+
+  // --- Card delivery instructions ---
+  if (data.delivery === 'rumah') tick(page1, 184.0,192.1,745.9,754.5);
+  else if (data.delivery === 'pejabat') tick(page1, 250.0,258.0,745.9,754.5);
+  else if (data.delivery === 'cawangan'){
+    tick(page1, 317.4,325.4,745.9,754.5);
+    lineText(page1, data.branchName, 459.0, 755.2, 7);
+  }
+  if (data.estatementAck) tick(page1, 20.3,28.4,777.9,786.4);
+
+  // ============ PAGE 3 ============
+
+  // --- Spouse details ---
+  const spouseNameCells = evenCells(20.9, 274.7, 24);
+  const spouseName = (data.spouseName || '').slice(0,48);
+  drawGrid(page3, spouseName.slice(0,24), spouseNameCells, 45.4, 52.3);
+  drawGrid(page3, spouseName.slice(24,48), spouseNameCells, 58.8, 65.7);
+  lineText(page3, data.spouseEmployer, 292.0, 52.3);
+  const spouseMobileDigits = (data.spouseMobile||'').replace(/\D/g,'');
+  drawGrid(page3, spouseMobileDigits.slice(0,3), evenCells(400.7,432.4,3), 60.8, 67.7);
+  drawGrid(page3, spouseMobileDigits.slice(3,10), evenCells(443.0,517.0,7), 60.8, 67.7);
+
+  // --- Emergency contact ---
+  lineText(page3, data.emergencyName, 173.1, 109.9, 7);
+  const emergencyMobileDigits = (data.emergencyMobile||'').replace(/\D/g,'');
+  drawGrid(page3, emergencyMobileDigits.slice(0,3), evenCells(401.4,433.1,3), 92.5, 99.3);
+  drawGrid(page3, emergencyMobileDigits.slice(3,10), evenCells(443.7,517.7,7), 92.5, 99.3);
+  lineText(page3, data.emergencyRelationship, 480.7, 111.4, 7);
+
+  // --- Supplementary card details ---
+  if (data.wantsSupp){
+    const suppNameCells = evenCells(20.6, 274.5, 24);
+    const suppName = (data.suppName || '').slice(0,48);
+    drawGrid(page3, suppName.slice(0,24), suppNameCells, 158.5, 165.3);
+    drawGrid(page3, suppName.slice(24,48), suppNameCells, 171.8, 178.7);
+    drawGrid(page3, (data.suppCardName||'').slice(0,19), evenCells(20.6, 221.6, 19), 203.2, 210.1);
+    if (data.suppGender === 'lelaki') tick(page3, 227.5,235.7,184.7,193.4);
+    else if (data.suppGender === 'perempuan') tick(page3, 227.5,235.7,196.6,205.3);
+    lineText(page3, data.suppRelationship, 20.9, 234.2, 7);
+    lineText(page3, data.suppMotherName, 291.6, 163.2, 7);
+    if (data.suppDobDD) drawGrid(page3, data.suppDobDD, evenCells(397.7,418.8,2), 177.9, 184.8);
+    if (data.suppDobMM) drawGrid(page3, data.suppDobMM, evenCells(426.9,448.0,2), 177.9, 184.8);
+    if (data.suppDobYYYY) drawGrid(page3, data.suppDobYYYY, evenCells(456.1,498.4,4), 177.9, 184.8);
+    const suppNricDigits = (data.suppNric||'').replace(/\D/g,'');
+    drawGrid(page3, suppNricDigits.slice(0,6), evenCells(403.2,466.7,6), 189.3, 196.2);
+    drawGrid(page3, suppNricDigits.slice(6,8), evenCells(480.2,501.4,2), 189.3, 196.2);
+    drawGrid(page3, suppNricDigits.slice(8,12), evenCells(512.0,554.3,4), 189.3, 196.2);
+    drawGrid(page3, (data.suppOldIc||'').slice(0,8), evenCells(424.7,509.3,8), 201.6, 208.5);
+    const suppMobileDigits = (data.suppMobile||'').replace(/\D/g,'');
+    drawGrid(page3, suppMobileDigits.slice(0,3), evenCells(400.7,432.4,3), 214.2, 221.1);
+    drawGrid(page3, suppMobileDigits.slice(3,10), evenCells(443.0,517.0,7), 214.2, 221.1);
+    lineText(page3, data.suppEmail, 343.6, 234.5, 7);
+
+    if (data.creditLimitOption === 'share') tick(page3, 20.8,28.8,271.3,279.8);
+    else if (data.creditLimitOption === 'assign'){
+      tick(page3, 20.8,28.8,280.6,289.2);
+      lineText(page3, data.creditLimitAmount ? Number(data.creditLimitAmount).toLocaleString('en-MY') : '', 133, 288.5, 6.5);
+    }
+  }
+
+  // ============ PAGE 4 ============
+  if (data.pdsAgree) tick(page4, 11.4,19.4,578.6,587.1);
+  if (data.connectedToBsn === 'yes'){
+    tick(page4, 11.2,19.2,346.0,354.5);
+    lineText(page4, data.connectedName, 13.7, 458.3, 7);
+    lineText(page4, data.connectedNric, 230.1, 458.3, 7);
+    lineText(page4, data.connectedRelationship, 383.2, 458.3, 7);
+  } else {
+    tick(page4, 11.4,19.4,475.1,483.6);
+  }
+
+  // ============ PAGE 5 ============
+  if (data.disclosureConsent === 'agree') tick(page5, 18.5,26.5,44.0,52.5);
+  else if (data.disclosureConsent === 'disagree') tick(page5, 18.5,26.5,55.7,64.2);
+  if (data.creditShieldAlAiman) tick(page5, 20.0,28.4,274.3,283.2);
+  if (data.dontWorryCreditShield || data.dontWorryBereavement) tick(page5, 20.1,28.5,500.0,508.9);
+  if (data.dontWorryCreditShield) tick(page5, 31.8,40.8,538.5,547.5);
+  if (data.dontWorryBereavement) tick(page5, 31.8,40.8,608.5,617.5);
+
+  // ============ PAGE 6 & 7 (Balance Transfer / EasyCash — optional) ============
+  if (data.wantsBalanceTransfer){
+    if (data.btApplicantType === 'new') tick(page6, 134.1,142.7,84.3,92.9);
+    else tick(page6, 315.4,324.0,84.3,92.9);
+    if (data.btProgram === 'balancetransfer') tick(page6, 134.4,143.0,100.8,109.4);
+    else tick(page6, 315.4,324.0,101.0,109.6);
+
+    const btNameCells = evenCells(17.8, 289.2, 25);
+    const btName = (data.fullName || '').slice(0,75);
+    drawGrid(page6, btName.slice(0,25), btNameCells, 158.9, 165.9);
+    drawGrid(page6, btName.slice(25,50), btNameCells, 174.3, 181.3);
+    drawGrid(page6, btName.slice(50,75), btNameCells, 191.2, 198.3);
+
+    const btNricDigits = (data.nric||'').replace(/\D/g,'');
+    drawGrid(page6, btNricDigits.slice(0,6), evenCells(125.2,190.2,6), 203.6, 210.7);
+    drawGrid(page6, btNricDigits.slice(6,8), evenCells(203.7,225.1,2), 203.6, 210.7);
+    drawGrid(page6, btNricDigits.slice(8,12), evenCells(236.2,279.6,4), 203.6, 210.7);
+
+    const btCardDigits = (data.btCardNo||'').replace(/\D/g,'');
+    drawGrid(page6, btCardDigits.slice(0,4), evenCells(17.2,60.6,4), 231.0, 238.1);
+    drawGrid(page6, btCardDigits.slice(4,8), evenCells(73.1,116.5,4), 231.0, 238.1);
+    drawGrid(page6, btCardDigits.slice(8,12), evenCells(129.1,172.5,4), 231.0, 238.1);
+    drawGrid(page6, btCardDigits.slice(12,16), evenCells(185.0,228.4,4), 231.0, 238.1);
+
+    const btMobileDigits = (data.mobile||'').replace(/\D/g,'');
+    drawGrid(page6, btMobileDigits.slice(0,3), evenCells(421.3,453.9,3), 159.2, 166.2);
+    drawGrid(page6, btMobileDigits.slice(3,10), evenCells(464.1,549.7,7), 159.2, 166.2);
+    lineText(page6, data.email, 367.5, 178.4, 7);
+
+    if (data.btAmountType === 'fixed'){
+      // Split into 3-3-2 digit groups matching the printed comma/decimal boxes
+      const whole = data.btAmount ? Math.floor(Number(data.btAmount)) : null;
+      const cents = data.btAmount ? Math.round((Number(data.btAmount) - Math.floor(Number(data.btAmount))) * 100) : null;
+      if (whole !== null){
+        const wholeStr = String(whole).padStart(6,'0').slice(-6);
+        drawGrid(page6, wholeStr.slice(0,3), evenCells(98.3,136.2,3), 719.0, 727.1);
+        drawGrid(page6, wholeStr.slice(3,6), evenCells(147.1,185.1,3), 719.0, 727.1);
+        drawGrid(page6, String(cents).padStart(2,'0'), evenCells(194.8,221.3,2), 719.0, 727.1);
+      }
+    } else if (data.btAmountType === 'percent' && data.btPercent){
+      drawGrid(page6, String(data.btPercent).padStart(2,'0').slice(-2), evenCells(532.0,561.7,2), 716.6, 727.1);
+    }
+
+    lineText(page6, data.btBankName, 111, 768, 7);
+    if (data.btAccountType === 'savings') tick(page6, 371.3,379.5,763.3,772.1);
+    else tick(page6, 493.8,502.0,763.3,772.1);
+    drawGrid(page6, (data.btAccountNo||''), evenCells(110.2,359.9,23), 780.8, 787.8);
+
+    if (data.btOtherCardNo || data.btOtherBankName || data.btOtherAmount){
+      lineText(page6, data.btOtherCardNo, 113, 418, 7);
+      lineText(page6, data.btOtherBankName, 273.5, 418, 7);
+      lineText(page6, data.btOtherAmount ? Number(data.btOtherAmount).toLocaleString('en-MY') : '', 411.3, 418, 7);
+    }
+
+    // Page 7 declarations (implied agreement when applying)
+    tick(page7, 14.3,22.5,41.9,50.6);
+    tick(page7, 14.4,22.6,124.7,133.5);
+    tick(page7, 14.3,22.5,189.3,198.1);
+  }
+
+  // ============ SIGNATURES ============
+  async function stampSignature(pg, pngBytes, x0, x1, y0, y1){
+    if (!pngBytes) return;
+    const img = await pdfDoc.embedPng(pngBytes);
+    const boxW = x1 - x0, boxH = y1 - y0;
+    const scale = Math.min((boxW * 0.92) / img.width, (boxH * 0.85) / img.height);
+    const w = img.width * scale, h = img.height * scale;
+    const cx = x0 + (boxW - w) / 2;
+    const cy = fy(y1) + (boxH - h) / 2;
+    pg.drawImage(img, { x: cx, y: cy, width: w, height: h });
+  }
+
+  if (data.sigPrincipalPng){
+    await stampSignature(page5, data.sigPrincipalPng, 20.5,261.2,176.0,212.4);
+    lineText(page5, data.signDateStr, 70, 237.8, 8);
+    if (data.creditShieldAlAiman || data.dontWorryCreditShield || data.dontWorryBereavement){
+      await stampSignature(page5, data.sigPrincipalPng, 20.5,261.2,640.5,676.9);
+      lineText(page5, data.signDateStr, 70, 701.4, 8);
+    }
+    if (data.wantsBalanceTransfer){
+      await stampSignature(page7, data.sigPrincipalPng, 14.3,252.1,231.9,284.6);
+      lineText(page7, data.signDateStr, 56, 309.0, 8);
+    }
+  }
+  if (data.wantsSupp && data.sigSuppPng){
+    await stampSignature(page5, data.sigSuppPng, 303.2,576.3,176.0,212.4);
+    lineText(page5, data.signDateStr, 353, 237.8, 8);
+  }
+
+  return pdfDoc.save();
+}
+
+const ccFormEl = document.getElementById('ccForm');
+let currentPdfUrl = null;
+let currentPdfFilename = 'BSN-Credit-Card-Application-Filled.pdf';
+let lastFormData = null;
+
+const WA_NUMBER = '601154160187'; // same banker number used on the ASB & loan CTAs
+const APP_TYPE_LABELS = { kerajaan:'Kerajaan', glc:'GLC', swasta:'Swasta', sendiri:'Bekerja Sendiri', komisen:'Berpendapatan Komisen' };
+const GOOGLE_FORM_BASE = 'https://docs.google.com/forms/d/e/1FAIpQLScFcwj8EXiHyCWDRRGBPzNbSVr2W9Av6pDApJGa_2RMuYg7hQ/viewform';
+
+function buildPrefilledGoogleFormUrl(data){
+  const p = new URLSearchParams();
+  p.set('usp', 'pp_url');
+  const set = (entryId, val) => { if (val) p.set(`entry.${entryId}`, val); };
+
+  set(59313892, 'Kad Credit Al-Aiman (Klasik, Gold & Platinum)');
+
+  const sectorMap = { kerajaan:'Penjawat Awam', glc:'Pekerja Swasta', swasta:'Pekerja Swasta', sendiri:'Pemilik Syarikat tunggal atau perkongsian', komisen:'Pekerja GIG berstatus gaji komisen' };
+  set(670501675, sectorMap[data.appType]);
+
+  set(1967860711, data.fullName);
+  set(1231881005, data.nric);
+
+  const eduMap = { sijil:'Sijil atau Diploma', diploma:'Diploma dan keatas', ijazah:'Diploma dan keatas' };
+  set(1245173384, eduMap[data.education]);
+
+  set(2039323200, data.mobile);
+  set(850865173, data.email);
+  set(974752641, [data.addr1, data.addr2].filter(Boolean).join(', '));
+  set(1536842496, data.motherName);
+
+  set(860622319, data.employerName);
+  set(179730533, data.officeAddr1);
+  set(353595115, data.position);
+  set(535719005, data.grossIncome);
+
+  const maritalMap = { bujang:'Bujang', berkahwin:'Berkahwin' };
+  set(478482787, maritalMap[data.marital]);
+
+  set(1137965112, data.spouseName);
+  set(1110040086, data.spouseMobile);
+  set(1930312287, data.spouseEmployer);
+
+  set(607510265, data.emergencyName);
+  set(1576639254, data.emergencyMobile);
+  set(2119809551, data.emergencyRelationship);
+
+  set(1036439717, data.cardName);
+
+  const deliveryMap = { rumah:'Pos ke alamat rumah', pejabat:'Pos ke alamat pejabat', cawangan:'Ambil sendiri di cawangan BSN Terdekat' };
+  set(1641288453, deliveryMap[data.delivery]);
+
+  const ownershipMap = { sendiri:'Milikan Sendiri', sewa:'Sewa' };
+  set(626260175, ownershipMap[data.ownership]);
+
+  set(439193072, data.occupancy);
+
+  return `${GOOGLE_FORM_BASE}?${p.toString()}`;
+}
+const INCOME_DOC_HINTS = {
+  kerajaan: 'Salinan penyata gaji 1 bulan terkini ATAU Surat Pengesahan Majikan.',
+  glc: 'Salinan penyata gaji 1 bulan terkini ATAU Surat Pengesahan Majikan.',
+  swasta: 'Salinan penyata gaji 3 bulan terkini / Penyata KWSP terkini / Borang EA / Borang BE.',
+  sendiri: 'Penyata akaun bank syarikat 6 bulan terkini, Borang B + resit cukai 2 tahun terkini, dan Borang 9/24/49 ATAU Sijil Pendaftaran Perniagaan.',
+  komisen: 'Penyata komisen terkini (6 bulan/tahunan) / Borang EA / Borang BE serta resit cukai rasmi.',
+};
+
+function buildWhatsAppMessage(data){
+  const cardLabel = cardTypeSelect.options[cardTypeSelect.selectedIndex]?.text || '-';
+  const sectorLabel = APP_TYPE_LABELS[data.appType] || '-';
+  return `Assalamualaikum/Salam, saya berminat memohon ${cardLabel}.\n\n` +
+    `Nama: ${data.fullName || '-'}\n` +
+    `Profesion: ${data.position || '-'}\n` +
+    `No. Telefon: ${data.mobile || '-'}\n` +
+    `Emel: ${data.email || '-'}\n` +
+    `Sektor: ${sectorLabel}`;
+}
+
+document.getElementById('btnBackToEdit').addEventListener('click', () => {
+  document.getElementById('previewStage').style.display = 'none';
+  ccFormEl.style.display = 'block';
+  ccFormEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+});
+
+document.getElementById('btnApprove').addEventListener('click', () => {
+  document.getElementById('previewStage').style.display = 'none';
+  const approvedStage = document.getElementById('approvedStage');
+  const dlBtn = document.getElementById('btnDownloadApproved');
+  dlBtn.href = currentPdfUrl;
+  dlBtn.download = currentPdfFilename;
+
+  const consentEl = document.getElementById('consentApply');
+  consentEl.checked = false;
+  const waBtn = document.getElementById('btnWhatsappApply');
+  waBtn.style.pointerEvents = 'none';
+  waBtn.style.opacity = '.5';
+  if (lastFormData){
+    waBtn.href = `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(buildWhatsAppMessage(lastFormData))}`;
+  }
+
+  approvedStage.style.display = 'block';
+
+  if (lastFormData){
+    document.getElementById('docSuppIcNote').style.display = lastFormData.wantsSupp ? 'inline' : 'none';
+    document.getElementById('docIncomeItem').textContent = INCOME_DOC_HINTS[lastFormData.appType] || '';
+    const folderName = (lastFormData.fullName || 'Applicant').trim().replace(/\s+/g, '_').replace(/[^A-Za-z0-9_]/g, '');
+    document.getElementById('driveFolderName').textContent = folderName || 'Applicant';
+    const driveLink = document.getElementById('driveFolderLink');
+    driveLink.href = buildPrefilledGoogleFormUrl(lastFormData);
+    driveLink.removeAttribute('aria-disabled');
+  }
+  document.getElementById('docUploadStage').style.display = 'block';
+
+  approvedStage.scrollIntoView({ behavior: 'smooth', block: 'start' });
+});
+
+document.getElementById('consentApply').addEventListener('change', (e) => {
+  const waBtn = document.getElementById('btnWhatsappApply');
+  waBtn.style.pointerEvents = e.target.checked ? 'auto' : 'none';
+  waBtn.style.opacity = e.target.checked ? '1' : '.5';
+});
+
+document.getElementById('btnWhatsappApply').addEventListener('click', () => {
+  document.getElementById('bankerInfoModal').style.display = 'flex';
+});
+document.getElementById('btnExitBankerModal').addEventListener('click', () => {
+  document.getElementById('bankerInfoModal').style.display = 'none';
+});
+
+document.getElementById('btnCopyFolderName').addEventListener('click', async () => {
+  const name = document.getElementById('driveFolderName').textContent;
+  try {
+    await navigator.clipboard.writeText(name);
+    const btn = document.getElementById('btnCopyFolderName');
+    const original = btn.textContent;
+    btn.textContent = 'Disalin!';
+    setTimeout(() => { btn.textContent = original; }, 1500);
+  } catch (e){ /* clipboard unavailable, ignore */ }
+});
+
+document.getElementById('btnReeditAfterApprove').addEventListener('click', () => {
+  document.getElementById('approvedStage').style.display = 'none';
+  ccFormEl.style.display = 'block';
+  ccFormEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+});
+document.getElementById('ccForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const statusEl = document.getElementById('statusMsg');
+  const btn = document.getElementById('genBtn');
+  statusEl.className = 'status';
+  statusEl.textContent = '';
+
+  if (!ccFormEl.checkValidity()){
+    ccFormEl.reportValidity();
+    statusEl.className = 'status error';
+    statusEl.textContent = 'Sila lengkapkan semua ruangan wajib (bertanda) sebelum menjana PDF. / Please fill in all required fields before generating the PDF.';
+    return;
+  }
+
+  if (sigPrincipal.isEmpty()){
+    statusEl.className = 'status error';
+    statusEl.textContent = 'Sila lukis tandatangan Pemohon Kad Utama sebelum menjana PDF. / Please draw the Principal Applicant signature before generating the PDF.';
+    document.getElementById('sigPrincipal').scrollIntoView({ behavior:'smooth', block:'center' });
+    return;
+  }
+  if (document.getElementById('wantsSupp').checked && sigSupp.isEmpty()){
+    statusEl.className = 'status error';
+    statusEl.textContent = 'Sila lukis tandatangan Pemohon Kad Tambahan sebelum menjana PDF. / Please draw the Supplementary Applicant signature before generating the PDF.';
+    document.getElementById('sigSupp').scrollIntoView({ behavior:'smooth', block:'center' });
+    return;
+  }
+
+  const dobRaw = document.getElementById('dob').value; // YYYY-MM-DD
+  let dobDD='', dobMM='', dobYYYY='';
+  if (dobRaw){ const [y,m,d] = dobRaw.split('-'); dobDD=d; dobMM=m; dobYYYY=y; }
+
+  const suppDobRaw = document.getElementById('suppDob').value;
+  let suppDobDD='', suppDobMM='', suppDobYYYY='';
+  if (suppDobRaw){ const [y,m,d] = suppDobRaw.split('-'); suppDobDD=d; suppDobMM=m; suppDobYYYY=y; }
+
+  const sameMailing = document.getElementById('sameMailing').checked;
+
+  const data = {
+    appType: getRadioValue('appType'),
+    cardType: document.getElementById('cardType').value,
+    network: getRadioValue('network'),
+    gcardSector: getRadioValue('gcardSector'),
+    aiafamOption: getRadioValue('aiafamOption'),
+    uumStatus: getRadioValue('uumStatus'),
+    delivery: getRadioValue('delivery'),
+    branchName: document.getElementById('branchName').value,
+    estatementAck: document.getElementById('estatementAck').checked,
+    salutation: getRadioValue('salutation'), salutationOther: document.getElementById('salutationOther').value,
+    fullName: document.getElementById('fullName').value,
+    cardName: document.getElementById('cardName').value,
+    gender: getRadioValue('gender'),
+    dobDD, dobMM, dobYYYY,
+    nric: document.getElementById('nric').value,
+    oldIc: document.getElementById('oldIc').value,
+    marital: getRadioValue('marital'), maritalOther: document.getElementById('maritalOther').value,
+    dependants: document.getElementById('dependants').value,
+    race: getRadioValue('race'), raceOther: document.getElementById('raceOther').value,
+    residency: getRadioValue('residency'),
+    education: getRadioValue('education'), educationOther: document.getElementById('educationOther').value,
+    addr1: document.getElementById('addr1').value, addr2: document.getElementById('addr2').value, addr3: document.getElementById('addr3').value,
+    poskod: document.getElementById('poskod').value, negeri: document.getElementById('negeri').value,
+    ownership: getRadioValue('ownership'),
+    occupancy: document.getElementById('occupancy').value,
+    sameMailing,
+    mailAddr1: document.getElementById('mailAddr1').value, mailAddr2: document.getElementById('mailAddr2').value,
+    mailPoskod: document.getElementById('mailPoskod').value, mailNegeri: document.getElementById('mailNegeri').value,
+    mobile: document.getElementById('mobile').value,
+    email: document.getElementById('email').value,
+    motherName: document.getElementById('motherName').value,
+    employerName: document.getElementById('employerName').value,
+    natureOfBusiness: document.getElementById('natureOfBusiness').value,
+    position: document.getElementById('position').value,
+    serviceYears: document.getElementById('serviceYears').value,
+    serviceMonths: document.getElementById('serviceMonths').value,
+    officeTel: document.getElementById('officeTel').value,
+    officeAddr1: document.getElementById('officeAddr1').value,
+    officeAddr2: document.getElementById('officeAddr2').value,
+    officeAddr3: document.getElementById('officeAddr3').value,
+    officePoskod: document.getElementById('officePoskod').value,
+    officeNegeri: document.getElementById('officeNegeri').value,
+    businessRegNo: document.getElementById('businessRegNo').value,
+    prevEmployer1: document.getElementById('prevEmployer1').value,
+    prevEmployer2: document.getElementById('prevEmployer2').value,
+    prevEmployer3: document.getElementById('prevEmployer3').value,
+    grossIncome: document.getElementById('grossIncome').value,
+    otherIncome: document.getElementById('otherIncome').value,
+    otherCards: document.getElementById('hasOtherCards').checked ? [...otherCardsContainer.children].map(row => ({
+      bank: row.querySelector('.oc-bank').value,
+      cardNo: row.querySelector('.oc-cardno').value,
+      since: row.querySelector('.oc-since').value,
+      limit: row.querySelector('.oc-limit').value,
+    })).filter(c => c.bank || c.cardNo) : [],
+    hasDebt: getRadioValue('hasDebt'),
+    debts: (function(){
+      const rows = debtContainer.querySelectorAll('.row3');
+      const out = [];
+      rows.forEach(row => {
+        const next = row.nextElementSibling;
+        out.push({
+          creditor: row.querySelector('.debt-creditor').value,
+          type: row.querySelector('.debt-type').value,
+          amount: row.querySelector('.debt-amount').value,
+          outstanding: next ? next.querySelector('.debt-outstanding').value : '',
+          installment: next ? next.querySelector('.debt-installment').value : '',
+        });
+      });
+      return out.filter(d => d.creditor || d.type);
+    })(),
+    spouseName: document.getElementById('spouseName').value,
+    spouseEmployer: document.getElementById('spouseEmployer').value,
+    spouseMobile: document.getElementById('spouseMobile').value,
+    emergencyName: document.getElementById('emergencyName').value,
+    emergencyMobile: document.getElementById('emergencyMobile').value,
+    emergencyRelationship: document.getElementById('emergencyRelationship').value,
+    wantsSupp: document.getElementById('wantsSupp').checked,
+    suppName: document.getElementById('suppName').value,
+    suppCardName: document.getElementById('suppCardName').value,
+    suppGender: getRadioValue('suppGender'),
+    suppRelationship: document.getElementById('suppRelationship').value,
+    suppMotherName: document.getElementById('suppMotherName').value,
+    suppDobDD, suppDobMM, suppDobYYYY,
+    suppNric: document.getElementById('suppNric').value,
+    suppOldIc: document.getElementById('suppOldIc').value,
+    suppMobile: document.getElementById('suppMobile').value,
+    suppEmail: document.getElementById('suppEmail').value,
+    creditLimitOption: getRadioValue('creditLimitOption'),
+    creditLimitAmount: document.getElementById('creditLimitAmount').value,
+    pdsAgree: document.getElementById('pdsAgree').checked,
+    connectedToBsn: getRadioValue('connectedToBsn'),
+    connectedName: document.getElementById('connectedName').value,
+    connectedNric: document.getElementById('connectedNric').value,
+    connectedRelationship: document.getElementById('connectedRelationship').value,
+    disclosureConsent: getRadioValue('disclosureConsent'),
+    creditShieldAlAiman: document.getElementById('creditShieldAlAiman').checked,
+    dontWorryCreditShield: document.getElementById('dontWorryCreditShield').checked,
+    dontWorryBereavement: document.getElementById('dontWorryBereavement').checked,
+    wantsBalanceTransfer: document.getElementById('wantsBalanceTransfer').checked,
+    btApplicantType: getRadioValue('btApplicantType'),
+    btProgram: getRadioValue('btProgram'),
+    btCardNo: document.getElementById('btCardNo').value,
+    btAmountType: getRadioValue('btAmountType'),
+    btAmount: document.getElementById('btAmount').value,
+    btPercent: document.getElementById('btPercent').value,
+    btBankName: document.getElementById('btBankName').value,
+    btAccountType: getRadioValue('btAccountType'),
+    btAccountNo: document.getElementById('btAccountNo').value,
+    btOtherCardNo: document.getElementById('btOtherCardNo').value,
+    btOtherBankName: document.getElementById('btOtherBankName').value,
+    btOtherAmount: document.getElementById('btOtherAmount').value,
+  };
+  lastFormData = data;
+
+  const signDateRaw = document.getElementById('signDate').value;
+  if (signDateRaw){ const [y,m,d] = signDateRaw.split('-'); data.signDateStr = `${d}/${m}/${y}`; }
+  data.sigPrincipalPng = await sigPrincipal.toPngBytes();
+  data.sigSuppPng = (document.getElementById('wantsSupp').checked && !sigSupp.isEmpty()) ? await sigSupp.toPngBytes() : null;
+
+  btn.disabled = true;
+  btn.textContent = 'Menjana PDF...';
+  try {
+    const bytes = await generatePdf(data);
+    const blob = new Blob([bytes], { type: 'application/pdf' });
+    if (currentPdfUrl) URL.revokeObjectURL(currentPdfUrl);
+    currentPdfUrl = URL.createObjectURL(blob);
+    const safeName = (data.fullName || 'Applicant').trim().replace(/\s+/g, '_').replace(/[^A-Za-z0-9_]/g, '');
+    currentPdfFilename = `BSN-Credit-Card-${safeName || 'Applicant'}.pdf`;
+
+    document.getElementById('pdfPreviewFrame').src = currentPdfUrl;
+    ccFormEl.style.display = 'none';
+    document.getElementById('approvedStage').style.display = 'none';
+    const previewStage = document.getElementById('previewStage');
+    previewStage.style.display = 'block';
+    previewStage.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+    statusEl.className = 'status ok';
+    statusEl.textContent = 'PDF berjaya dijana. Sila semak di bawah sebelum meluluskan.';
+  } catch (err){
+    console.error(err);
+    statusEl.className = 'status error';
+    statusEl.textContent = 'Ralat: ' + err.message;
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Jana PDF Terisi / Generate Filled PDF';
+  }
+});
+
+// --- Pre-fill from loan.lateffitazri.my fallback handoff (URL query params) ---
+// Contract: ?sector=kerajaan|swasta|profesional&name=...&phone=...&email=...
+//           &profession=...&card=islamic-klasik|islamic-emas|islamic-platinum&income=24000
+// Runs last so every field's own input/change listener (formatting, uppercase,
+// toggles) is already registered before we dispatch synthetic events at it.
+(function prefillFromQuery(){
+  const p = new URLSearchParams(window.location.search);
+  if (![...p.keys()].length) return;
+
+  function setVal(id, val){
+    if (!val) return;
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.value = val;
+    el.dispatchEvent(new Event('input', { bubbles: true }));
+    el.dispatchEvent(new Event('change', { bubbles: true }));
+  }
+  function setRadio(name, val){
+    if (!val) return;
+    const el = document.querySelector(`input[name="${name}"][value="${val}"]`);
+    if (el){ el.checked = true; el.dispatchEvent(new Event('change', { bubbles: true })); }
+  }
+
+  const sector = (p.get('sector') || '').toLowerCase();
+  const sectorMap = { kerajaan: 'kerajaan', swasta: 'swasta', profesional: 'swasta' };
+  setRadio('appType', sectorMap[sector]);
+
+  setVal('fullName', (p.get('name') || '').toUpperCase());
+  setVal('mobile', p.get('phone'));
+  setVal('email', p.get('email'));
+  setVal('position', (p.get('profession') || '').toUpperCase());
+  setVal('grossIncome', p.get('income'));
+
+  const cardParam = (p.get('card') || '').toLowerCase();
+  const cardCodeMap = {
+    'islamic-klasik':'islamic-klasik', 'islamic-emas':'islamic-emas', 'islamic-platinum':'islamic-platinum',
+    'klasik':'islamic-klasik', 'emas':'islamic-emas', 'gold':'islamic-emas', 'platinum':'islamic-platinum',
+  };
+  const cardCode = cardCodeMap[cardParam];
+  if (cardCode){
+    cardTypeSelect.value = cardCode;
+    cardTypeSelect.dispatchEvent(new Event('change', { bubbles: true }));
+  }
+})();
+</script>
+</body>
+</html>
