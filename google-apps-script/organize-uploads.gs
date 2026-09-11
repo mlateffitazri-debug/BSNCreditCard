@@ -1,0 +1,128 @@
+/**
+ * BSN Credit Card — auto-organize uploaded documents by applicant name.
+ *
+ * SETUP (one-time):
+ * 1. Open the Google Form (the document-upload-only one) in Edit mode.
+ * 2. Extensions -> Apps Script. Paste this whole file in, replacing Code.gs.
+ * 3. Fill in NAME_QUESTION_TITLE and PARENT_FOLDER_ID below.
+ * 4. Run any function once from the editor (e.g. select `onFormSubmit` in the
+ *    toolbar dropdown and click Run) — this prompts Google to ask for
+ *    permission (Drive + Forms access). Approve it once.
+ * 5. Click the clock icon (Triggers) in the left sidebar -> "+ Add Trigger":
+ *      - Function: onFormSubmit
+ *      - Event source: From form
+ *      - Event type: On form submit
+ *    Save.
+ * 6. Done — every new submission will now auto-run this script.
+ *
+ * WHAT IT DOES:
+ * On each form submission, reads the "Nama Pemohon" answer, creates (or
+ * reuses) a Drive folder named after that applicant under PARENT_FOLDER_ID,
+ * and moves every uploaded file for that response into it — so each
+ * applicant ends up with their own folder instead of everything dumped
+ * into one flat folder.
+ */
+
+// ── Configuration — fill these in ───────────────────────────────────────────
+
+// Must match the exact question title in the Form (case-sensitive).
+const NAME_QUESTION_TITLE = 'Nama Pemohon';
+
+// The Drive folder ID that should contain one subfolder per applicant.
+// Get this from the folder's URL: drive.google.com/drive/folders/<THIS PART>
+// Leave as '' to use the Form's own default "File responses" folder as the
+// parent (Google creates one automatically the first time someone uploads).
+const PARENT_FOLDER_ID = '';
+
+// ── Trigger entry point ──────────────────────────────────────────────────
+
+function onFormSubmit(e) {
+  try {
+    const response = e.response;
+    const itemResponses = response.getItemResponses();
+
+    let applicantName = '';
+    const fileIds = [];
+
+    for (const itemResponse of itemResponses) {
+      const item = itemResponse.getItem();
+      const title = item.getTitle();
+
+      if (title === NAME_QUESTION_TITLE) {
+        applicantName = String(itemResponse.getResponse() || '').trim();
+        continue;
+      }
+
+      if (item.getType() === FormApp.ItemType.FILE_UPLOAD) {
+        const answer = itemResponse.getResponse();
+        // File-upload answers are always an array of Drive file IDs, even
+        // when only one file was uploaded.
+        const ids = Array.isArray(answer) ? answer : [answer];
+        ids.forEach((id) => { if (id) fileIds.push(id); });
+      }
+    }
+
+    if (fileIds.length === 0) {
+      Logger.log('No uploaded files found on this response — nothing to move.');
+      return;
+    }
+
+    const folderName = sanitizeFolderName(applicantName) || 'Tiada_Nama_' + Utilities.formatDate(new Date(), 'GMT+8', 'yyyyMMdd_HHmmss');
+    const parent = getParentFolder();
+    const applicantFolder = getOrCreateFolder(parent, folderName);
+
+    fileIds.forEach((fileId) => moveFileToFolder(fileId, applicantFolder));
+
+    Logger.log(`Moved ${fileIds.length} file(s) into folder "${folderName}".`);
+  } catch (err) {
+    Logger.log('onFormSubmit error: ' + err);
+    // Re-throw so a failed run shows up under Executions in the Apps Script
+    // dashboard — silent failures here would be worse than a visible error.
+    throw err;
+  }
+}
+
+// ── Helpers ──────────────────────────────────────────────────────────────
+
+function sanitizeFolderName(name) {
+  return name
+    .trim()
+    .replace(/\s+/g, ' ')
+    .replace(/[\\/:*?"<>|]/g, ''); // strip characters Drive folder names can't use cleanly
+}
+
+function getParentFolder() {
+  if (PARENT_FOLDER_ID) {
+    return DriveApp.getFolderById(PARENT_FOLDER_ID);
+  }
+  // Fall back to wherever the first uploaded file already lives (the Form's
+  // own auto-created "File responses" folder) so this works even before
+  // PARENT_FOLDER_ID is configured.
+  const form = FormApp.getActiveForm();
+  const destId = form.getDestinationId();
+  if (form.getDestinationType() === FormApp.DestinationType.SPREADSHEET) {
+    // The file-responses folder sits alongside the response Sheet with a
+    // predictable name; find it by convention.
+    const ss = SpreadsheetApp.openById(destId);
+    const ssFile = DriveApp.getFileById(ss.getId());
+    const parents = ssFile.getParents();
+    if (parents.hasNext()) return parents.next();
+  }
+  return DriveApp.getRootFolder();
+}
+
+function getOrCreateFolder(parent, name) {
+  const existing = parent.getFoldersByName(name);
+  if (existing.hasNext()) return existing.next();
+  return parent.createFolder(name);
+}
+
+function moveFileToFolder(fileId, targetFolder) {
+  const file = DriveApp.getFileById(fileId);
+  const currentParents = file.getParents();
+  targetFolder.addFile(file);
+  while (currentParents.hasNext()) {
+    const p = currentParents.next();
+    if (p.getId() !== targetFolder.getId()) p.removeFile(file);
+  }
+}

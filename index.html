@@ -1551,13 +1551,17 @@ let lastFormData = null;
 
 const WA_NUMBER = '601154160187'; // same banker number used on the ASB & loan CTAs
 const APP_TYPE_LABELS = { kerajaan:'Kerajaan', glc:'GLC', swasta:'Swasta', sendiri:'Bekerja Sendiri', komisen:'Berpendapatan Komisen' };
-// Document-upload-only Google Form (no other questions — nothing to prefill,
-// so the customer only ever sees the upload question, not a duplicate of the
-// data they already entered above).
+// Document-upload Google Form — only 2 questions (Nama Pemohon + upload
+// fail), so the customer no longer sees a duplicate of the whole application.
+// Nama Pemohon is still prefilled so they don't have to retype it.
 const GOOGLE_FORM_BASE = 'https://docs.google.com/forms/d/e/1FAIpQLSd0ikQZ0wmEZ_vZAAnlg7EdJuha7N1jmmijQCt7gfazkA73kA/viewform';
+const GOOGLE_FORM_NAME_ENTRY_ID = '1001686238';
 
 function buildPrefilledGoogleFormUrl(data){
-  return GOOGLE_FORM_BASE;
+  const p = new URLSearchParams();
+  p.set('usp', 'pp_url');
+  if (data.fullName) p.set(`entry.${GOOGLE_FORM_NAME_ENTRY_ID}`, data.fullName);
+  return `${GOOGLE_FORM_BASE}?${p.toString()}`;
 }
 const INCOME_DOC_HINTS = {
   kerajaan: 'Salinan penyata gaji 1 bulan terkini ATAU Surat Pengesahan Majikan.',
